@@ -1,0 +1,49 @@
+<div class="container" [@routerTransition]>
+  <div class="login-page">
+    <div class="row">
+      <div class="col-md-4 offset-md-4">
+        <div class="login-header-block">
+          <i class="fa fa-user-circle login-icon"></i>
+          <h1>כניסה למערכת</h1>
+        </div>
+        <hr>
+        <br>
+          <form (ngSubmit) = "onSubmit(signUpForm)" #signUpForm="ngForm" >
+              <div class="form-content">
+
+                  <div class="input-group">
+                      <div class="input-group-prepend">
+                        <i class="input-group-text pt-2 fa fa-user"></i>
+                      </div>
+                      <input name="email" class="form-control" placeholder="שם משתמש" ngModel type="email" autofocus required>
+                  </div>
+                  <br>
+
+                  <div class="input-group ">
+                    <div class="input-group-prepend">
+                      <i class="input-group-text pt-2 fa fa-lock"></i>
+                    </div>
+                    <input type="password" name="password" class="form-control" placeholder="סיסמא" ngModel required>
+                  </div>
+                  <br>
+                  <div class="input-group justify-content-center">
+                    <div class="checkbox">
+                        <label>
+                          <span> זכור אותי </span>
+                          <mat-checkbox name="reme" color="primary" [(ngModel)]="model.reme"></mat-checkbox>
+                        </label>
+                    </div>
+                  </div>
+                  <br>
+              </div> <!--.form-content-->
+              <button type="submit" mat-raised-button color="primary" [disabled]="signUpForm.invalid"> התחברות </button>
+          </form>
+          <br>
+      </div> <!--.col-md-4.push-md-4-->
+    </div> <!--.row-->
+    <ng-template>
+      <div class="form-text login-tip-block"><a href="#">שכחתי סיסמא <i class="fa fa-question-circle-o"></i></a></div>
+      <div class="form-text login-tip-block">במידה ואין ברשותך שם משתמש וסיסמא - ניתן <a href="#">ללחוץ כאן להרשמה <i class="fa fa-user-plus"></i></a></div>
+    </ng-template>
+  </div> <!--.login-page-->
+</div> <!--.container-->

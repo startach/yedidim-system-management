@@ -1,0 +1,18 @@
+/* login page */
+.login-page {
+    margin-top: 10%;
+    text-align: center;
+}
+
+.login-icon { 
+    font-size: 5em;
+}
+
+.login-tip-block, input {
+    direction: rtl;
+}
+
+/* validations */
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}

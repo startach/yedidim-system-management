@@ -1,0 +1,33 @@
+<form class="example-form" dir="rtl" class="right">
+  <p>
+    {{user.fname}}
+  </p>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="ת.ז" [value]="user.id" required>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="שם פרטי" [value]="user.fname" required>
+  </mat-form-field>
+  <br/>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="משפחה" [value]="user.lname" required>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="מס' כונן" [value]="user.conanNum" required>
+  </mat-form-field>
+  <br/>
+  
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="מספר כונן" [value]="user.mokdanNum" required>
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="מספר טלפון" [value]="user.phoneNumber" >
+  </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="הרשאות" [value]="user.permissions.value" required>
+  </mat-form-field>
+  <br/>
+
+<button mat-button>שמור</button>
+
+</form>
