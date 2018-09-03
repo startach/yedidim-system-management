@@ -16,7 +16,7 @@ import { LoginComponent } from './components/login/login.component';
 import { FormsModule }   from '@angular/forms';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { AuthService } from './auth-service';
-
+import{AngularFireAuth} from 'angularfire2/auth'
 
 
 
@@ -44,7 +44,7 @@ import { AuthService } from './auth-service';
 ],
   exports: [
   ],
-  providers: [AuthService],
+  providers: [AngularFireAuth],
   
   bootstrap: [AppComponent]
 })
