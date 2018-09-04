@@ -1,72 +1,89 @@
-<table mat-table [dataSource]="users" class="mat-elevation-z8">
+<div>
+  <mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
 
-  <!--- Note that these columns can be defined in any order.
+      Sidenav content
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar class="center">
+        <span class="center">
+          <strong>ידידים | סטארטאח</strong>
+        </span>
+          <button mat-raised-button>הוסף משתמש</button>
+      </mat-toolbar>
+      <span>
+
+        <button mat-button (click)="sidenav.toggle()"><strong>Menu</strong></button>
+
+
+
+      <!-- <div *ngIf="!shouldRun">Please open on Stackblitz to see result</div> -->
+
+
+      <table mat-table [dataSource]="users" class="mat-elevation-z8" style="width:1400px; direction: rtl">
+
+        <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> תעודת זהות </th>
-      <td mat-cell *matCellDef="let element"> {{element.IdentityNumber}} </td>
-    </ng-container>
-  <ng-container matColumnDef="firstName">
-    <th mat-header-cell *matHeaderCellDef>שם פרטי </th>
-    <td mat-cell *matCellDef="let element"> {{element.FirstName}} </td>
-  </ng-container>
-  <ng-container matColumnDef="lastName">
-      <th mat-header-cell *matHeaderCellDef>משפחה</th>
-      <td mat-cell *matCellDef="let element"> {{element.LastName}} </td>
-    </ng-container>
-    <ng-container matColumnDef="driveCode">
-        <th mat-header-cell *matHeaderCellDef> מס' כונן </th>
-        <td mat-cell *matCellDef="let element"> {{element.DriveCode}} </td>
-      </ng-container>
-      <ng-container matColumnDef="phone">
+        <!-- Name Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> תעודת זהות </th>
+          <td mat-cell *matCellDef="let element"> {{element.IdentityNumber}} </td>
+        </ng-container>
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef>שם פרטי </th>
+          <td mat-cell *matCellDef="let element"> {{element.FirstName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef>משפחה</th>
+          <td mat-cell *matCellDef="let element"> {{element.LastName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="driveCode">
+          <th mat-header-cell *matHeaderCellDef> מס' כונן </th>
+          <td mat-cell *matCellDef="let element"> {{element.DriveCode}} </td>
+        </ng-container>
+        <ng-container matColumnDef="phone">
           <th mat-header-cell *matHeaderCellDef> פלאפון </th>
           <td mat-cell *matCellDef="let element"> {{element.MobilePhone}} </td>
-    </ng-container>
-    <ng-container matColumnDef="address">
-        <th mat-header-cell *matHeaderCellDef>כתובת</th>
-        <td mat-cell *matCellDef="let element"> {{element.StreetAddress}} </td>
-      </ng-container>
-  <ng-container matColumnDef="city">
-    <th mat-header-cell *matHeaderCellDef> עיר </th>
-    <td mat-cell *matCellDef="let element"> {{element.City}} </td>
-  </ng-container>
-  <ng-container matColumnDef="emailAddres">
-      <th mat-header-cell *matHeaderCellDef> Email </th>
-      <td mat-cell *matCellDef="let element"> {{element.EmailAddres}} </td>
-    </ng-container>
-    <ng-container matColumnDef="yourVehicle">
-      <th mat-header-cell *matHeaderCellDef> סוג רכב </th>
-      <td mat-cell *matCellDef="let element"> {{element.YourVeihcle}} </td>
-</ng-container>
-    <ng-container matColumnDef="vehicleMake">
-        <th mat-header-cell *matHeaderCellDef> רכב</th>
-        <td mat-cell *matCellDef="let element"> {{element.VehicleMake}} </td>
-      </ng-container>
-      <ng-container matColumnDef="licenseNumber">
+        </ng-container>
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef>כתובת</th>
+          <td mat-cell *matCellDef="let element"> {{element.StreetAddress}} </td>
+        </ng-container>
+        <ng-container matColumnDef="city">
+          <th mat-header-cell *matHeaderCellDef> עיר </th>
+          <td mat-cell *matCellDef="let element"> {{element.City}} </td>
+        </ng-container>
+        <ng-container matColumnDef="emailAddres">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let element"> {{element.EmailAddres}} </td>
+        </ng-container>
+        <ng-container matColumnDef="yourVehicle">
+          <th mat-header-cell *matHeaderCellDef> סוג רכב </th>
+          <td mat-cell *matCellDef="let element"> {{element.YourVeihcle}} </td>
+        </ng-container>
+        <ng-container matColumnDef="vehicleMake">
+          <th mat-header-cell *matHeaderCellDef> רכב</th>
+          <td mat-cell *matCellDef="let element"> {{element.VehicleMake}} </td>
+        </ng-container>
+        <ng-container matColumnDef="licenseNumber">
           <th mat-header-cell *matHeaderCellDef> מס' רכב</th>
           <td mat-cell *matCellDef="let element"> {{element.LicenseNumber}} </td>
         </ng-container>
-  <ng-container matColumnDef="dateOfBirth">
-    <th mat-header-cell *matHeaderCellDef> תאריך לידה </th>
-    <td mat-cell *matCellDef="let element"> {{element.DateOfBirth}} </td>
-  </ng-container>
-  <ng-container matColumnDef="deviceType">
-    <th mat-header-cell *matHeaderCellDef> סוג מכשיר </th>
-    <td mat-cell *matCellDef="let element"> {{element.DeviceType}} </td>
-  </ng-container>
-  
- 
-   
-      
-      
-    
+        <ng-container matColumnDef="dateOfBirth">
+          <th mat-header-cell *matHeaderCellDef> תאריך לידה </th>
+          <td mat-cell *matCellDef="let element"> {{element.DateOfBirth}} </td>
+        </ng-container>
+        <ng-container matColumnDef="deviceType">
+          <th mat-header-cell *matHeaderCellDef> סוג מכשיר </th>
+          <td mat-cell *matCellDef="let element"> {{element.DeviceType}} </td>
+        </ng-container>
 
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (dblclick)="openDialog(row)" style="text-align: center"></tr>
+      </table>
+    </span>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (dblclick)="openDialog(row)"></tr>
-</table>
-
-
-
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

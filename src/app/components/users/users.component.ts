@@ -24,6 +24,7 @@ export class UsersComponent implements OnInit {
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'driveCode','phone', 'address', 'city', 'emailAddres', 'yourVehicle', 'vehicleMake', 'licenseNumber', 'dateOfBirth', 'deviceType'];
   dataSource: Array<User>;
   public users:Array<volunteer>;
+  
   constructor(private mockDataService: MockDataService, public dialog: MatDialog, afd: AngularFireDatabase) {
     this.dataSource = new Array<User>();
 
