@@ -33,7 +33,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
     afd.list<any>('volunteer').valueChanges().subscribe(
       res => { this.usersArr = res; this.users.data = this.usersArr }
     );
-
   }
 
   ngOnInit() {

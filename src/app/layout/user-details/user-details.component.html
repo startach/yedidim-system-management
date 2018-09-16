@@ -3,21 +3,23 @@
 </mat-toolbar>
 <mat-dialog-content>
 
-    <form [formGroup]="registerForm"  class="form right" dir="rtl">
+  <form [formGroup]="registerForm" class="form right" dir="rtl">
 
     <div>
       <strong>פרטים אישיים</strong>
     </div>
-    <br/>
+    <br />
     <mat-form-field class="col-md-4">
-      <input matInput type="text" formControlName="FirstName" placeholder="שם פרטי" [(ngModel)]="user.FirstName" required>
+      <input matInput type="text" formControlName="FirstName" placeholder="שם פרטי" [(ngModel)]="user.FirstName"
+        required>
     </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="משפחה" formControlName="LastName" [(ngModel)]="user.LastName" required>
     </mat-form-field>
     <mat-form-field class="col-md-4">
-        <input matInput type="text" placeholder="מספר זהות" formControlName="IdentityNumber" [(ngModel)]="user.IdentityNumber" required>
-      </mat-form-field>
+      <input matInput type="text" placeholder="מספר זהות" formControlName="IdentityNumber" [(ngModel)]="user.IdentityNumber"
+        required>
+    </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="כתובת" formControlName="StreetAddress" [(ngModel)]="user.StreetAddress">
     </mat-form-field>
@@ -25,61 +27,65 @@
       <input matInput type="text" placeholder="עיר" formControlName="City" [(ngModel)]="user.City">
     </mat-form-field>
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="מספר טלפון" formControlName="MobilePhone" [(ngModel)]="user.MobilePhone" required>
+      <input matInput type="text" placeholder="מספר טלפון" formControlName="MobilePhone" [(ngModel)]="user.MobilePhone"
+        required>
     </mat-form-field>
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="אימייל" formControlName="EmailAddress" [(ngModel)]="user.EmailAddress" >
+      <input matInput type="text" placeholder="אימייל" formControlName="EmailAddress" [(ngModel)]="user.EmailAddress">
     </mat-form-field>
 
 
 
-    <br/>
+    <br />
     <div>
       <strong>הרשאות</strong>
     </div>
-    <br/>
+    <br />
     <mat-form-field class="col-md-4">
-      <mat-select matInput type="text" placeholder="הרשאות" formControlName="permissions" [(ngModel)]="user.permissions" multiple required>
+      <input matInput type="text" placeholder="מס' כונן" formControlName="DriveCode" [(ngModel)]="user.DriveCode"
+        required>
+    </mat-form-field>
+    <mat-form-field class="col-md-4">
+      <mat-select matInput type="text" placeholder="הרשאות" formControlName="permissions" [(ngModel)]="user.permissions"
+        multiple>
         <mat-option *ngFor="let permission of permissions" value={{permission}}>{{permission}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="מס' כונן" formControlName="DriveCode" [(ngModel)]="user.DriveCode" required>
+    <mat-form-field class="col-md-4" *ngIf="isDispatcher()">
+      <input matInput type="text" formControlName="DispatcherCode" [(ngModel)]="user.DispatcherCode" placeholder="מס' מוקדן">
     </mat-form-field>
-    <mat-form-field class="col-md-4">
-        <input matInput type="text" placeholder="מס' מוקדן"> 
-      </mat-form-field>
-        <mat-form-field class="col-md-4">
+    <mat-form-field class="col-md-4" *ngIf="isManager()">
       <mat-select matInput type="text" placeholder="הרשאת מנהל" formControlName="managerPermissions" [(ngModel)]="user.managerPermissions">
-        <mat-option>צפיה</mat-option>
-        <mat-option>עריכה</mat-option>
+        <mat-option *ngFor="let managerPermission of managerPermissions" value={{managerPermission}}>{{managerPermission}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <br/>
+    <br />
     <div>
       <strong>פרטי עזר</strong>
     </div>
-    <br/>
+    <br />
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="רכב חלופי" formControlName="AnotherVehicle" [(ngModel)]="user.AnotherVehicle" >
+      <input matInput type="text" placeholder="רכב חלופי" formControlName="AnotherVehicle" [(ngModel)]="user.AnotherVehicle">
     </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="איזור" formControlName="Area" [(ngModel)]="user.Area" required>
     </mat-form-field>
-
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="תאריך לידה" formControlName="DateOfBirth" [(ngModel)]="user.DateOfBirth">
+      <input matInput [matDatepicker]="picker" placeholder="תאריך לידה" formControlName="DateOfBirth">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+    <!-- <input matInput type="text" placeholder="תאריך לידה" formControlName="DateOfBirth" [(ngModel)]="user.DateOfBirth"> -->
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="ציוד" formControlName="Equipment" [(ngModel)]="user.Equipment">
     </mat-form-field>
-    
+
 
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="יצרן רכב" formControlName="VehicleMake" [(ngModel)]="user.VehicleMake">
     </mat-form-field>
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="סוג רכב" formControlName="YourVehicle" [(ngModel)]="user.YourVehicle" >
+      <input matInput type="text" placeholder="סוג רכב" formControlName="YourVehicle" [(ngModel)]="user.YourVehicle">
     </mat-form-field>
 
 

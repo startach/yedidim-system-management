@@ -15,5 +15,5 @@ export class AppComponent {
    this.items = this.af.list('/phones').valueChanges();
    
   }
-  title = 'yedidim-management-system';
+  title = 'ידידים - מערכת ניהול';
 }

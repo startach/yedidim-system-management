@@ -20,6 +20,7 @@ import{AngularFireAuth} from 'angularfire2/auth';
 import { HeaderComponent } from './layout/core/header/header.component';
 import { LayoutComponent } from './layout/layout.component'
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
 
 
 
@@ -31,7 +32,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     UserDetailsComponent,
     HeaderComponent,
-    LayoutComponent
+    LayoutComponent,
 
   ],
   imports: [
@@ -43,14 +44,16 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
         AngularFireDatabaseModule,
-        FormsModule
+        FormsModule,
+        MatDatepickerModule,
+        MatNativeDateModule
   ],
   entryComponents: [
     UserDetailsComponent
 ],
   exports: [
   ],
-  providers: [AngularFireAuth],
+  providers: [AngularFireAuth,MatDatepickerModule],
   
   bootstrap: [AppComponent]
 })

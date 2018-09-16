@@ -5,6 +5,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { volunteer } from '../../shared/models/volunteer'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+
 @Component({
   selector: 'app-user-details',
   templateUrl: './user-details.component.html',
@@ -13,16 +14,17 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class UserDetailsComponent implements OnInit {
   registerForm: FormGroup;
   user: any;
+  dispatcher:any;
   constructor(public dialogRef: MatDialogRef<UserDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private afd: AngularFireDatabase,
     private formBuilder: FormBuilder) { }
   private permissions: string[];
   private managerPermissions: string[];
-  
+
 
   ngOnInit() {
-    this.permissions = ['מנהל', 'כונן', 'מוקדן'];
-    this.managerPermissions=['צפיה','עריכה'];
+    this.permissions = ['מנהל', 'מוקדן'];
+    this.managerPermissions = ['צפיה', 'עריכה'];
     this.registerForm = this.formBuilder.group(
       {
         FirstName: ['חובה', Validators.required],
@@ -43,11 +45,17 @@ export class UserDetailsComponent implements OnInit {
         VehicleMake: ['',],
         YourVehicle: [''],
         permissions: ['', Validators.required],
-        managerPermissions: ['',]
+        managerPermissions: ['',],
+        DispatcherCode: ['',]
       }
     );
+
     if (this.data) {
       this.user = this.data;
+      if (!this.user.managerPermissions) {
+        this.user.managerPermissions = '';
+      }
+
     } else {
       this.user = {
         AnotherVehicle: ' ',
@@ -67,9 +75,28 @@ export class UserDetailsComponent implements OnInit {
         VehicleMake: '',
         YourVehicle: '',
         permissions: '',
-        managerPermissions:''
+        managerPermissions: ' ',
+        DispatcherCode:' '
       }
     }
+  }
+
+  isDispatcher(): boolean {
+    if (this.user.permissions && this.user.permissions.indexOf('מוקדן') > -1) {
+      this.registerForm.controls['DispatcherCode'].setValidators([Validators.required]);
+      this.registerForm.updateValueAndValidity();
+      return true;
+    }
+    return false;
+  }
+
+  isManager(): boolean {
+    if (this.user.permissions && this.user.permissions.indexOf('מנהל') > -1) {
+      this.registerForm.controls['managerPermissions'].setValidators([Validators.required]);
+      this.registerForm.updateValueAndValidity();
+      return true;
+    }
+    return false;
   }
 
   onNoClick(): void {
@@ -81,7 +108,21 @@ export class UserDetailsComponent implements OnInit {
     if (this.registerForm.invalid) {
       return;
     }
-    this.afd.list('volunteer').set(this.user.MobilePhone, this.user);
+    this.afd.list('volunteer').set('+972'+this.user.MobilePhone.substr(1), this.user);
+    if (this.user.permissions.indexOf('מוקדן') > -1) {
+      this.dispatcher={
+        NotificationStatus:'',
+        NotificationStatusTimestamp:'',
+        handleBot:'',
+        name:this.user.FirstName+this.user.LastName,
+        notifications:'',
+        phone:this.user.MobilePhone,
+        time:'',
+        token:'',
+        version:''
+      }
+       this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
+    }
   }
 
 }
