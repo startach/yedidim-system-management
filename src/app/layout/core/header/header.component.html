@@ -1,0 +1,21 @@
+<mat-sidenav-container class="example-container">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+
+      <span class="">
+        <strong>ידידים | סטארטאח</strong>
+      </span>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <mat-toolbar class="center">
+        <span class="center">
+          <strong>ידידים | סטארטאח</strong>
+        </span>
+
+        <button mat-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
+      </mat-toolbar>
+      <span>
+</span>
+<router-outlet></router-outlet>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>

@@ -1,0 +1,56 @@
+<div style="padding-left: 20%;padding-right: 20%;">
+
+
+  <mat-form-field style="width: 100%">
+    <input  matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+
+  <table mat-table [dataSource]="users" matSort >
+
+
+    <ng-container matColumnDef="FirstName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>שם פרטי </th>
+      <td mat-cell *matCellDef="let element"> {{element.FirstName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="LastName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>משפחה</th>
+      <td mat-cell *matCellDef="let element"> {{element.LastName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="DriveCode">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> מס' כונן </th>
+      <td mat-cell *matCellDef="let element"> {{element.DriveCode}} </td>
+    </ng-container>
+    <ng-container matColumnDef="DispatcherCode">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> מס' מוקדן </th>
+      <td mat-cell *matCellDef="let element"> NULL.00 </td>
+    </ng-container>
+    <ng-container matColumnDef="MobilePhone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> פלאפון </th>
+      <td mat-cell *matCellDef="let element"> {{element.MobilePhone}} </td>
+    </ng-container>
+    <ng-container matColumnDef="Permissions">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> הרשאות </th>
+      <td mat-cell *matCellDef="let element"> Permissions </td>
+    </ng-container>
+    <ng-container matColumnDef="Settings">
+      <th mat-header-cell *matHeaderCellDef style="text-align:center">
+        <button mat-mini-fab color="primary">
+          <mat-icon aria-label="הוסף משתמש" (click)="openDialog()">add</mat-icon>
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button>
+          <mat-icon (click)="openDialog(row)">create</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon (click)="deleteUser(row.MobilePhone)">delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (dblclick)="openDialog(row)" style="text-align: center"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+
+</div>

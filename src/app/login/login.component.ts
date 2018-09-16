@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { routerTransition } from '../../app.animations';
+import { routerTransition } from '../shared/moduls/app.animations';
 import { NgForm } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { Router } from '@angular/router'
@@ -20,12 +20,12 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    debugger
+    
     const email = form.value.email;
     const password = form.value.password;
     this.af.auth.signInWithEmailAndPassword(email, password).then(
       response => (
-        this.router.navigate(['/users']))
+        this.router.navigate(['/main/users']))
 
     ).catch(
       error =>
