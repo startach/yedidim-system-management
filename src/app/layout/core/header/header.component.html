@@ -1,21 +1,25 @@
 <mat-sidenav-container class="example-container">
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened">
+  <mat-sidenav #sidenav mode="side" [(opened)]="opened">
 
-      <span class="">
-        <strong>ידידים | סטארטאח</strong>
-      </span>
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <mat-toolbar class="center">
-        <span class="center">
-          <strong>ידידים | סטארטאח</strong>
-        </span>
-
+    <span class="">
+      <img src="../../../../assets/images/startach.png" style="max-width: 80px">
+    </span>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar>
+      <div class="col-md-0">
         <button mat-button (click)="sidenav.toggle()"><mat-icon>menu</mat-icon></button>
-      </mat-toolbar>
-      <span>
-</span>
-<router-outlet></router-outlet>
+      </div>
+      <div class="offset-md-5 col-md-1">
+        <strong>ידידים | סטארטאח</strong>
+      </div>
+      <div class="offset-md-4 col-md-1 ">
+        <img src="../../../../assets/images/startach.png" style="max-width: 70px">
+      </div>
+    </mat-toolbar>
+    <span>
+    </span>
+    <router-outlet></router-outlet>
 
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
