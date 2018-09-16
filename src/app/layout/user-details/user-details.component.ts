@@ -14,12 +14,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class UserDetailsComponent implements OnInit {
   registerForm: FormGroup;
   user: any;
-  dispatcher:any;
+  dispatcher: any;
   constructor(public dialogRef: MatDialogRef<UserDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private afd: AngularFireDatabase,
     private formBuilder: FormBuilder) { }
   private permissions: string[];
   private managerPermissions: string[];
+  private errorMessage:string;
+
 
 
   ngOnInit() {
@@ -76,7 +78,7 @@ export class UserDetailsComponent implements OnInit {
         YourVehicle: '',
         permissions: '',
         managerPermissions: ' ',
-        DispatcherCode:' '
+        DispatcherCode: ' '
       }
     }
   }
@@ -106,22 +108,23 @@ export class UserDetailsComponent implements OnInit {
   save(): void {
     debugger
     if (this.registerForm.invalid) {
+      this.errorMessage='אנא מלא את השדות המסומנים';
       return;
     }
-    this.afd.list('volunteer').set('+972'+this.user.MobilePhone.substr(1), this.user);
+    this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
     if (this.user.permissions.indexOf('מוקדן') > -1) {
-      this.dispatcher={
-        NotificationStatus:'',
-        NotificationStatusTimestamp:'',
-        handleBot:'',
-        name:this.user.FirstName+this.user.LastName,
-        notifications:'',
-        phone:this.user.MobilePhone,
-        time:'',
-        token:'',
-        version:''
+      this.dispatcher = {
+        NotificationStatus: '',
+        NotificationStatusTimestamp: '',
+        handleBot: '',
+        name: this.user.FirstName + this.user.LastName,
+        notifications: '',
+        phone: this.user.MobilePhone,
+        time: '',
+        token: '',
+        version: ''
       }
-       this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
+      this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
     }
   }
 
