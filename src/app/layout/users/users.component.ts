@@ -6,7 +6,8 @@ import { UserDetailsComponent } from '../user-details/user-details.component'
 import { AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireList } from 'angularfire2/database';
 import { volunteer } from '../../shared/models/volunteer';
-import { MatPaginator,MatSort, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { DataService } from '../../shared/services/data.service';
 
 
 
@@ -20,15 +21,15 @@ import { MatPaginator,MatSort, MatTableDataSource } from '@angular/material';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, AfterViewInit {
-
-  displayedColumns: string[] = ['FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions','Settings'];
+  user: any;
+  displayedColumns: string[] = ['FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions', 'Settings'];
   usersArr: volunteer[];
   users = new MatTableDataSource<volunteer>(this.usersArr);
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private mockDataService: MockDataService, public dialog: MatDialog,public afd: AngularFireDatabase) {
+  constructor(private mockDataService: MockDataService, public dialog: MatDialog, public afd: AngularFireDatabase, private data: DataService) {
 
     afd.list<any>('volunteer').valueChanges().subscribe(
       res => { this.usersArr = res; this.users.data = this.usersArr }
@@ -36,10 +37,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.data.currentUser.subscribe(user => this.user = user)
 
   }
 
   openDialog(row: any): void {
+    if (!this.checkManagerPermissions())
+      return;
     let dialogRef;
     if (row) {
       dialogRef = this.dialog.open(UserDetailsComponent, {
@@ -58,7 +62,11 @@ export class UsersComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
+  checkManagerPermissions() {
+    if (this.user.managerPermissions &&this.user.managerPermissions.indexOf('עריכה')>-1)
+      return true;
+    return false;
+  }
   applyFilter(filterValue: string) {
     this.users.filter = filterValue.trim().toLowerCase();
   }
@@ -68,8 +76,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.users.paginator = this.paginator;
 
   }
-deleteUser(key):void{
-  debugger
-  this.afd.list('volunteer').remove(key);
-}
+  deleteUser(key): void {
+    debugger
+    this.afd.list('volunteer').remove(key);
+  }
 }

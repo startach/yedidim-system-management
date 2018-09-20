@@ -16,6 +16,7 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { UserDetailsComponent } from './layout/user-details/user-details.component';
 import { AuthService } from './shared/services/auth-service';
+import { DataService } from './shared/services/data.service';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { HeaderComponent } from './layout/core/header/header.component';
 import { LayoutComponent } from './layout/layout.component'
@@ -53,7 +54,7 @@ import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
   ],
   exports: [
   ],
-  providers: [AngularFireAuth, MatDatepickerModule],
+  providers: [AngularFireAuth, MatDatepickerModule,DataService],
 
   bootstrap: [AppComponent]
 })

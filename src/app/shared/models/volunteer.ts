@@ -19,5 +19,5 @@ export class volunteer{
     streetAddres:string;
     vehicleMake:string;
     yourVehicle:string;
-
+permissions:Array<string>;
 }
