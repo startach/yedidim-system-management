@@ -27,6 +27,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
+    debugger
     const email = form.value.email;
     const password = form.value.password;
     this.af.auth.signInWithEmailAndPassword(email, password).then(
@@ -34,7 +35,8 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('email',email);
        this.afd.list('volunteer', ref =>  ref.orderByChild('EmailAddress').equalTo(email)).valueChanges().subscribe((data:volunteer[]) => {
          if(!data  || data.length==0)
-         {alert("not authorized")
+         {
+           alert("not authorized")
        return;
         }
           this.data.changeUser(data[0])

@@ -4,6 +4,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { volunteer } from '../../shared/models/volunteer'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 @Component({
@@ -17,10 +18,10 @@ export class UserDetailsComponent implements OnInit {
   dispatcher: any;
   constructor(public dialogRef: MatDialogRef<UserDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private afd: AngularFireDatabase,
-    private formBuilder: FormBuilder) { }
-  private permissions: string[];
-  private managerPermissions: string[];
-  private errorMessage:string;
+    private formBuilder: FormBuilder,private auth:AngularFireAuth) { }
+  public permissions: string[];
+  public managerPermissions: string[];
+  public errorMessage:string;
 
 
 
@@ -111,6 +112,7 @@ export class UserDetailsComponent implements OnInit {
       this.errorMessage='אנא מלא את השדות המסומנים';
       return;
     }
+    this.createFirebaseUser(this.user.EmailAddress,this.user.IdentityNumber);
     this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
     if (this.user.permissions.indexOf('מוקדן') > -1) {
       this.dispatcher = {
@@ -127,5 +129,12 @@ export class UserDetailsComponent implements OnInit {
       this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
     }
   }
+
+createFirebaseUser(email,password):void{
+  this.auth.auth.createUserWithEmailAndPassword(email,password);
+  
+}
+
+
 
 }
