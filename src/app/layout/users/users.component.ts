@@ -63,6 +63,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     });
   }
   checkManagerPermissions() {
+    
     if (this.user.managerPermissions &&this.user.managerPermissions.indexOf('עריכה')>-1)
       return true;
     return false;

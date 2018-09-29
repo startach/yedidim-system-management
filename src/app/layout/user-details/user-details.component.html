@@ -19,8 +19,9 @@
       <input matInput type="text" placeholder="משפחה" formControlName="LastName" [(ngModel)]="user.LastName" required>
     </mat-form-field>
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="מספר זהות" formControlName="IdentityNumber" [(ngModel)]="user.IdentityNumber"
-        required>
+      <input matInput type="text" placeholder="מספר זהות" formControlName="IdentityNumber" minlength="7" maxlength="10" [(ngModel)]="user.IdentityNumber" required>
+      <mat-error>מספר לא תקין</mat-error>
+
     </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="כתובת" formControlName="StreetAddress" [(ngModel)]="user.StreetAddress">
@@ -29,8 +30,8 @@
       <input matInput type="text" placeholder="עיר" formControlName="City" [(ngModel)]="user.City">
     </mat-form-field>
     <mat-form-field class="col-md-4">
-      <input matInput type="text" placeholder="מספר טלפון" formControlName="MobilePhone" [(ngModel)]="user.MobilePhone"
-        required>
+      <input matInput type="text" placeholder="מספר טלפון" formControlName="MobilePhone" minlength="10" maxlength="11" [(ngModel)]="user.MobilePhone" required>
+      <mat-error>מספר לא תקין</mat-error>
     </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="אימייל" formControlName="EmailAddress" [(ngModel)]="user.EmailAddress">
@@ -95,4 +96,5 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="save()">שמור</button>
+  <button mat-button (click)="close()">סגור</button>
 </mat-dialog-actions>

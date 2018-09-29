@@ -18,10 +18,10 @@ export class UserDetailsComponent implements OnInit {
   dispatcher: any;
   constructor(public dialogRef: MatDialogRef<UserDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private afd: AngularFireDatabase,
-    private formBuilder: FormBuilder,private auth:AngularFireAuth) { }
+    private formBuilder: FormBuilder, private auth: AngularFireAuth) { }
   public permissions: string[];
   public managerPermissions: string[];
-  public errorMessage:string;
+  public errorMessage: string;
 
 
 
@@ -43,7 +43,7 @@ export class UserDetailsComponent implements OnInit {
         Equipment: ['',],
         IdentityNumber: ['', Validators.required],
         LicenseNumber: ['',],
-        MobilePhone: ['', Validators.required],
+        MobilePhone: ['*מספר טלפון לא תקין', Validators.required],
         StreetAddress: ['',],
         VehicleMake: ['',],
         YourVehicle: [''],
@@ -107,33 +107,41 @@ export class UserDetailsComponent implements OnInit {
   }
 
   save(): void {
-    debugger
     if (this.registerForm.invalid) {
-      this.errorMessage='אנא מלא את השדות המסומנים';
+      this.errorMessage = 'אנא מלא את השדות המסומנים';
       return;
     }
-    this.createFirebaseUser(this.user.EmailAddress,this.user.IdentityNumber);
-    this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
-    if (this.user.permissions.indexOf('מוקדן') > -1) {
-      this.dispatcher = {
-        NotificationStatus: '',
-        NotificationStatusTimestamp: '',
-        handleBot: '',
-        name: this.user.FirstName + this.user.LastName,
-        notifications: '',
-        phone: this.user.MobilePhone,
-        time: '',
-        token: '',
-        version: ''
+    else {
+      this.createFirebaseUser(this.user.EmailAddress, this.user.IdentityNumber);
+      debugger
+      this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
+
+      if (this.user.permissions.indexOf('מוקדן') > -1) {
+        this.dispatcher = {
+          NotificationStatus: '',
+          NotificationStatusTimestamp: '',
+          handleBot: '',
+          name: this.user.FirstName + this.user.LastName,
+          notifications: '',
+          phone: this.user.MobilePhone,
+          time: '',
+          token: '',
+          version: ''
+        }
+        this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
       }
-      this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
+      close();
     }
   }
 
-createFirebaseUser(email,password):void{
-  this.auth.auth.createUserWithEmailAndPassword(email,password);
-  
-}
+  close(): void {
+    this.dialogRef.close();
+  }
+
+  createFirebaseUser(email, password): void {
+    this.auth.auth.createUserWithEmailAndPassword(email, password);
+
+  }
 
 
 
