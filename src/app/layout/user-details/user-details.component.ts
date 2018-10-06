@@ -112,8 +112,8 @@ export class UserDetailsComponent implements OnInit {
       return;
     }
     else {
-      this.createFirebaseUser(this.user.EmailAddress, this.user.IdentityNumber);
       debugger
+      this.createFirebaseUser(this.user.EmailAddress, this.user.IdentityNumber);
       this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
 
       if (this.user.permissions.indexOf('מוקדן') > -1) {
@@ -121,7 +121,7 @@ export class UserDetailsComponent implements OnInit {
           NotificationStatus: '',
           NotificationStatusTimestamp: '',
           handleBot: '',
-          name: this.user.FirstName + this.user.LastName,
+          name: this.user.FirstName +' '+ this.user.LastName,
           notifications: '',
           phone: this.user.MobilePhone,
           time: '',

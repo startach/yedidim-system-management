@@ -1,5 +1,7 @@
 <div style="padding-left: 20%;padding-right: 20%;">
 
+  <input type="file" class="btn btn-info" style="display: inline-block;" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+
   <mat-form-field style="width: 100%">
     <input  matInput (keyup)="applyFilter($event.target.value)" placeholder="חפש">
   </mat-form-field>
