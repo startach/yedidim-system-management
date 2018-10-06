@@ -44,8 +44,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.data.currentUser.subscribe(user => this.user = user
-    )
+    this.data.currentUser.subscribe(user => this.user = user)
   }
 
   openDialog(row: any): void {

@@ -5,6 +5,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { volunteer } from '../../shared/models/volunteer'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { DataService } from '../../shared/services/data.service';
 
 
 @Component({
@@ -16,17 +17,20 @@ export class UserDetailsComponent implements OnInit {
   registerForm: FormGroup;
   user: any;
   dispatcher: any;
-  constructor(public dialogRef: MatDialogRef<UserDetailsComponent>,
+  constructor(private dataService: DataService, public dialogRef: MatDialogRef<UserDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private afd: AngularFireDatabase,
     private formBuilder: FormBuilder, private auth: AngularFireAuth) { }
   public permissions: string[];
   public managerPermissions: string[];
   public errorMessage: string;
+  private currentUser: any;
 
 
 
   ngOnInit() {
-    this.permissions = ['מנהל', 'מוקדן'];
+    this.dataService.currentUser.subscribe(user => this.currentUser = user)
+
+    this.permissions = ['מנהל ראשי', 'מנהל', 'מוקדן'];
     this.managerPermissions = ['צפיה', 'עריכה'];
     this.registerForm = this.formBuilder.group(
       {
@@ -92,7 +96,17 @@ export class UserDetailsComponent implements OnInit {
     }
     return false;
   }
-
+  isPrimeManager(permission: string): boolean {
+    debugger
+    if (this.currentUser.permissions.indexOf('מנהל ראשי') > -1)
+      return false;
+    else {
+      if (permission === 'מנהל'||permission === 'מנהל ראשי')
+        return true;
+      else
+        return false;
+    }
+  }
   isManager(): boolean {
     if (this.user.permissions && this.user.permissions.indexOf('מנהל') > -1) {
       this.registerForm.controls['managerPermissions'].setValidators([Validators.required]);
@@ -121,7 +135,7 @@ export class UserDetailsComponent implements OnInit {
           NotificationStatus: '',
           NotificationStatusTimestamp: '',
           handleBot: '',
-          name: this.user.FirstName +' '+ this.user.LastName,
+          name: this.user.FirstName + ' ' + this.user.LastName,
           notifications: '',
           phone: this.user.MobilePhone,
           time: '',
