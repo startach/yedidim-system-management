@@ -23,6 +23,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, AfterViewInit {
+  private loading: boolean = false;
   user: any;
   displayedColumns: string[] = ['FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions', 'Settings'];
   usersArr: volunteer[];
@@ -35,10 +36,14 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private mockDataService: MockDataService, public dialog: MatDialog, public afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
+  constructor(private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
     if (this.af.auth.currentUser) {
       afd.list<any>('volunteer').valueChanges().subscribe(
-        res => { this.usersArr = res; this.users.data = this.usersArr }
+        res => {
+        this.usersArr = res; this.users.data = this.usersArr
+          this.loading = false;
+
+        }
       );
     }
   }
@@ -85,6 +90,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   incomingfile(event) {
+    debugger
     this.file = event.target.files[0];
 
     let fileReader = new FileReader();
@@ -108,13 +114,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
             xlsxUsers[i][Object.keys(xlsxUsers[i])[index]] = String(xlsxUsers[i][Object.keys(xlsxUsers[i])[index]]);
           }
         }
-        if (xlsxUsers[i]['DispatcherCode'] != '') {
+        if (xlsxUsers[i]['DispatcherCode'] != '' && xlsxUsers[i]['DispatcherCode']) {
           let obj2 = { 'permissions': ["מוקדן"] }
 
           Object.assign(xlsxUsers[i], obj2);
         }
         this.afd.list('volunteer').set('+972' + xlsxUsers[i]['MobilePhone'], xlsxUsers[i]);
-        if (xlsxUsers[i]['DispatcherCode'] != '') {
+        if (xlsxUsers[i]['DispatcherCode'] != ''&& xlsxUsers[i]['DispatcherCode']) {
           this.dispatcher = {
             NotificationStatus: '',
             NotificationStatusTimestamp: '',
@@ -137,6 +143,11 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   deleteUser(key): void {
     debugger
-    this.afd.list('volunteer').remove(key);
+    if (key) {
+      this.afd.list('volunteer').remove(key);
+    }
+    else{
+      return
+    }
   }
 }

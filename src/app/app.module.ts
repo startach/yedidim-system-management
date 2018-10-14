@@ -22,6 +22,7 @@ import { HeaderComponent } from './layout/core/header/header.component';
 import { LayoutComponent } from './layout/layout.component'
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
+import { BlockUIModule } from 'ng-block-ui';
 
 
 
@@ -47,7 +48,8 @@ import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
     AngularFireDatabaseModule,
     FormsModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    BlockUIModule.forRoot()
   ],
   entryComponents: [
     UserDetailsComponent

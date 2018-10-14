@@ -6,7 +6,7 @@ import { Router } from '@angular/router'
 import { AngularFireDatabase } from 'angularfire2/database';
 import { DataService } from '../shared/services/data.service';
 import { volunteer } from '../shared/models/volunteer';
-import {BlockUI, NgBlockUI } from 'ng-block-ui'
+import {BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 @Component({
@@ -18,8 +18,10 @@ import {BlockUI, NgBlockUI } from 'ng-block-ui'
 })
 export class LoginComponent implements OnInit {
   public model: any;
+  private loading:boolean=false;
   user:any;
-  @BlockUI() blockUi: NgBlockUI
+  @BlockUI() blockUI: NgBlockUI;
+
   constructor(private af: AngularFireAuth, private router: Router, private afd: AngularFireDatabase,
     private data: DataService) { }
 
@@ -32,21 +34,24 @@ export class LoginComponent implements OnInit {
     debugger
     const email = form.value.email;
     const password = form.value.password;
-    this.blockUi.start('Loading...');
+    this.loading=true;
+    this.blockUI.start('Loading...');
     this.af.auth.signInWithEmailAndPassword(email, password).then(
       (response) => {
         sessionStorage.setItem('email',email);
         this.afd.list('volunteer', ref =>  ref.orderByChild('EmailAddress').equalTo(email)).valueChanges().subscribe((data:volunteer[]) => {
           if(!data  || data.length==0)
           {
-            this.blockUi.stop();
+            this.loading=false;
+           this.blockUI.stop();
             alert("not authorized")
             return;
           }
-          this.blockUi.stop();
+          this.loading=false;
+          this.blockUI.stop();
           this.data.changeUser(data[0])
 
-          if(data[0].permissions.indexOf('מנהל')>-1)
+          if(data[0].permissions.indexOf('מנהל')>-1||data[0].permissions.indexOf('מנהל ראשי') > -1)
             this.router.navigate(['/main/users'])
         });;
 
@@ -55,8 +60,12 @@ export class LoginComponent implements OnInit {
 
 
     ).catch(
-      error =>
+      error =>{
         alert("ERROR IN - " + error)
+        this.blockUI.stop();
+        this.loading=false;
+      }
+        
     );
 
     //    this.authService.login(email,password);

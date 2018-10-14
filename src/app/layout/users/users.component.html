@@ -1,12 +1,16 @@
+<div>
+  <mat-progress-bar class="example-margin" *ngIf="loading" color="primary" mode="indeterminate">
+  </mat-progress-bar>
+</div>
 <div style="padding-left: 20%;padding-right: 20%;">
 
-  <input type="file" class="btn btn-info" style="display: inline-block;" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx">
+  <!-- <input type="file" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx"> -->
 
   <mat-form-field style="width: 100%">
-    <input  matInput (keyup)="applyFilter($event.target.value)" placeholder="חפש">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="חפש">
   </mat-form-field>
 
-  <table mat-table [dataSource]="users" matSort >
+  <table mat-table [dataSource]="users" matSort>
 
 
     <ng-container matColumnDef="FirstName">
@@ -33,15 +37,19 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header> הרשאות </th>
       <td mat-cell *matCellDef="let element"> {{element.permissions}} </td>
     </ng-container>
-    <ng-container matColumnDef="Settings"  >
+    <ng-container matColumnDef="Settings">
       <th mat-header-cell *matHeaderCellDef style="text-align:center">
-        <button mat-mini-fab color="primary"*ngIf="checkManagerPermissions()">
-          <mat-icon aria-label="הוסף משתמש"  (click)="openDialog()">add</mat-icon>
+        <button mat-mini-fab type="primary" onclick="document.getElementById('fileToUpload').click()">
+          <mat-icon>file_upload</mat-icon>
+        </button>
+        <input id="fileToUpload" type="file" (change)="incomingfile($event)" style="display:none;" accept=".xlsx">
+        <button mat-mini-fab color="primary" *ngIf="checkManagerPermissions()">
+          <mat-icon aria-label="הוסף משתמש" (click)="openDialog()">add</mat-icon>
         </button>
       </th>
-  
-      <td mat-cell *matCellDef="let row" >
-        <button mat-icon-button *ngIf="checkManagerPermissions()" >
+
+      <td mat-cell *matCellDef="let row">
+        <button mat-icon-button *ngIf="checkManagerPermissions()">
           <mat-icon (click)="openDialog(row)">create</mat-icon>
         </button>
         <button mat-icon-button *ngIf="checkManagerPermissions()">
