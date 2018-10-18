@@ -42,7 +42,7 @@
         <button mat-mini-fab type="primary" onclick="document.getElementById('fileToUpload').click()">
           <mat-icon>file_upload</mat-icon>
         </button>
-        <input id="fileToUpload" type="file" (change)="incomingfile($event)" style="display:none;" accept=".xlsx">
+        <input id="fileToUpload" type="file" (change)="incomingfile($event)" style="display:none;" accept=".xlsx" multiple>
         <button mat-mini-fab color="primary" *ngIf="checkManagerPermissions()">
           <mat-icon aria-label="הוסף משתמש" (click)="openDialog()">add</mat-icon>
         </button>

@@ -32,7 +32,9 @@ export class LoginComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     debugger
-    const email = form.value.email;
+    const phonePrefix='+972';
+    const emailSignature= '@yedidim.org';
+    const email = phonePrefix + form.value.email.substr(1) + emailSignature; //For example +972527147236@yedidim.org
     const password = form.value.password;
     this.loading=true;
     this.blockUI.start('Loading...');

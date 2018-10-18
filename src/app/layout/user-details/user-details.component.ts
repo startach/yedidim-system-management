@@ -97,7 +97,6 @@ export class UserDetailsComponent implements OnInit {
     return false;
   }
   isPrimeManager(permission: string): boolean {
-    debugger
     if (this.currentUser.permissions.indexOf('מנהל ראשי') > -1)
       return false;
     else {
@@ -121,6 +120,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   save(): void {
+  debugger
     if (this.registerForm.invalid) {
       this.errorMessage = 'אנא מלא את השדות המסומנים';
       return;

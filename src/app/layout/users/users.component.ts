@@ -32,6 +32,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
   file: File;
   isManager: boolean;
   dispatcher: any;
+  xcelMandatoryColumns: Array<string>;
+  logErrors: Array<string>;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -40,7 +42,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     if (this.af.auth.currentUser) {
       afd.list<any>('volunteer').valueChanges().subscribe(
         res => {
-        this.usersArr = res; this.users.data = this.usersArr
+          this.usersArr = res; this.users.data = this.usersArr
           this.loading = false;
 
         }
@@ -50,6 +52,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.data.currentUser.subscribe(user => this.user = user)
+    this.xcelMandatoryColumns = ['DriveCode', 'FirstName', 'LastName', 'IdentityNumber', 'MobilePhone']
   }
 
   openDialog(row: any): void {
@@ -107,9 +110,17 @@ export class UsersComponent implements OnInit, AfterViewInit {
       var worksheet = workbook.Sheets[first_sheet_name];
       var xlsxUsers = XLSX.utils.sheet_to_json(worksheet, { raw: true });
       for (let i = 0; i < xlsxUsers.length; i++) {
+        for (let j = 0; j < this.xcelMandatoryColumns.length; j++) {
+          if (!xlsxUsers[i][this.xcelMandatoryColumns[j]]) {
 
+            ///this.logErrors.push('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
+            console.log('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
+            continue;
+          }
+        }
 
         for (let index = 0; index < Object.keys(xlsxUsers[i]).length; index++) {
+
           if (typeof (xlsxUsers[i][Object.keys(xlsxUsers[i])[index]] != 'string')) {
             xlsxUsers[i][Object.keys(xlsxUsers[i])[index]] = String(xlsxUsers[i][Object.keys(xlsxUsers[i])[index]]);
           }
@@ -119,8 +130,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
           Object.assign(xlsxUsers[i], obj2);
         }
+
+
+        this.af.auth.createUserWithEmailAndPassword('+972' + xlsxUsers[i]['MobilePhone'] + '@yedidim.org',
+          xlsxUsers[i]['IdentityNumber']);
+
         this.afd.list('volunteer').set('+972' + xlsxUsers[i]['MobilePhone'], xlsxUsers[i]);
-        if (xlsxUsers[i]['DispatcherCode'] != ''&& xlsxUsers[i]['DispatcherCode']) {
+        if (xlsxUsers[i]['DispatcherCode'] != '' && xlsxUsers[i]['DispatcherCode']) {
           this.dispatcher = {
             NotificationStatus: '',
             NotificationStatusTimestamp: '',
@@ -136,6 +152,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
           this.afd.list('dispatchers').set(xlsxUsers[i]['DispatcherCode'], this.dispatcher);
         }
+        // if (!this.logErrors || this.logErrors.length==0) {
+        //   alert('Invalid values in /n'+this.logErrors)
+        // }
       }
     }
     fileReader.readAsArrayBuffer(this.file);
@@ -146,7 +165,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     if (key) {
       this.afd.list('volunteer').remove(key);
     }
-    else{
+    else {
       return
     }
   }
