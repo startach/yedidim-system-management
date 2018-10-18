@@ -24,12 +24,12 @@ export class LayoutComponent implements OnInit {
 
           this.router.navigate(['/login'])
         }
-        else if(!this.af.auth.currentUser){
-          this.router.navigate(['/login'])
+        // else if(!this.af.auth.currentUser){
+        //   this.router.navigate(['/login'])
 
-        }
+        // }
         else {
-          let a = this.afd.list('volunteer', ref => ref.orderByChild('EmailAddress').equalTo(email)).valueChanges().subscribe(data => {
+          this.afd.list('volunteer', ref => ref.orderByChild('MobilePhone').equalTo(email)).valueChanges().subscribe(data => {
             this.data.changeUser(data[0])
           });;
         }

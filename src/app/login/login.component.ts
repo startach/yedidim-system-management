@@ -34,22 +34,20 @@ export class LoginComponent implements OnInit {
     debugger
     const phonePrefix='+972';
     const emailSignature= '@yedidim.org';
+    const originalEmailValue=form.value.email;
     const email = phonePrefix + form.value.email.substr(1) + emailSignature; //For example +972527147236@yedidim.org
     const password = form.value.password;
-    this.loading=true;
-    this.blockUI.start('Loading...');
+    this.blockUI.start('...טוען');
     this.af.auth.signInWithEmailAndPassword(email, password).then(
       (response) => {
-        sessionStorage.setItem('email',email);
-        this.afd.list('volunteer', ref =>  ref.orderByChild('EmailAddress').equalTo(email)).valueChanges().subscribe((data:volunteer[]) => {
+        sessionStorage.setItem('email',originalEmailValue);
+        this.afd.list('volunteer', ref =>  ref.orderByChild('MobilePhone').equalTo(originalEmailValue||originalEmailValue.substr(1))).valueChanges().subscribe((data:volunteer[]) => {
           if(!data  || data.length==0)
           {
-            this.loading=false;
            this.blockUI.stop();
             alert("not authorized")
             return;
           }
-          this.loading=false;
           this.blockUI.stop();
           this.data.changeUser(data[0])
 
@@ -65,7 +63,6 @@ export class LoginComponent implements OnInit {
       error =>{
         alert("ERROR IN - " + error)
         this.blockUI.stop();
-        this.loading=false;
       }
         
     );

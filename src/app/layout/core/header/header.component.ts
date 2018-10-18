@@ -17,8 +17,9 @@ export class HeaderComponent implements OnInit {
     this.data.currentUser.subscribe(user => this.user = user)
   }
   logout():void{
-   this.angularFire.auth.signOut().then(()=> this.router.navigate(['/login'])
-   )
+    sessionStorage.setItem('email','');
+    this.router.navigate(['/login'])
+  //  this.angularFire.auth.signOut().then(()=> this.router.navigate(['/login']))
   }
 
 }

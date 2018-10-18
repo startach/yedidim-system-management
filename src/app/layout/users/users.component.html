@@ -2,15 +2,14 @@
   <mat-progress-bar class="example-margin" *ngIf="loading" color="primary" mode="indeterminate">
   </mat-progress-bar>
 </div>
-<div style="padding-left: 20%;padding-right: 20%;">
-
+<div style="padding-left: 10%;padding-right: 10%; background-image: url('../../../assets/images/rawpixel-558597-unsplash.jpg')">
   <!-- <input type="file" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx"> -->
 
   <mat-form-field style="width: 100%">
-    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="חפש">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="חפש תותח חסד">
   </mat-form-field>
 
-  <table mat-table [dataSource]="users" matSort>
+  <table mat-table [dataSource]="users" matSort style="opacity: 0.7;">
 
 
     <ng-container matColumnDef="FirstName">
@@ -39,21 +38,21 @@
     </ng-container>
     <ng-container matColumnDef="Settings">
       <th mat-header-cell *matHeaderCellDef style="text-align:center">
-        <button mat-mini-fab type="primary" onclick="document.getElementById('fileToUpload').click()">
+        <button mat-mini-fab type="primary" onclick="document.getElementById('fileToUpload').click()" matTooltip="העלה קובץ בפורמט אקסל">
           <mat-icon>file_upload</mat-icon>
         </button>
-        <input id="fileToUpload" type="file" (change)="incomingfile($event)" style="display:none;" accept=".xlsx" multiple>
+        <input id="fileToUpload" type="file" (change)="incomingfile($event)" style="display:none;" onclick="this.value=null" accept=".xlsx" multiple>
         <button mat-mini-fab color="primary" *ngIf="checkManagerPermissions()">
-          <mat-icon aria-label="הוסף משתמש" (click)="openDialog()">add</mat-icon>
+          <mat-icon aria-label="הוסף משתמש" (click)="openDialog()" matTooltip="הוסף תותח חסד">add</mat-icon>
         </button>
       </th>
 
       <td mat-cell *matCellDef="let row">
         <button mat-icon-button *ngIf="checkManagerPermissions()">
-          <mat-icon (click)="openDialog(row)">create</mat-icon>
+          <mat-icon (click)="openDialog(row)" matTooltip="ערוך תותח חסד">create</mat-icon>
         </button>
         <button mat-icon-button *ngIf="checkManagerPermissions()">
-          <mat-icon (click)="deleteUser(row.MobilePhone)">delete</mat-icon>
+          <mat-icon (click)="deleteUser(row.MobilePhone)" matTooltip="מחק תותח חסד">delete</mat-icon>
         </button>
       </td>
     </ng-container>

@@ -39,7 +39,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
-    if (this.af.auth.currentUser) {
+    if (sessionStorage.getItem('email')) {
       afd.list<any>('volunteer').valueChanges().subscribe(
         res => {
           this.usersArr = res; this.users.data = this.usersArr
@@ -133,7 +133,11 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
 
         this.af.auth.createUserWithEmailAndPassword('+972' + xlsxUsers[i]['MobilePhone'] + '@yedidim.org',
-          xlsxUsers[i]['IdentityNumber']);
+          xlsxUsers[i]['IdentityNumber']).then(value => {
+            console.log('Success!', value);
+          }, err => {
+            console.log('Something went wrong in:', err.message);
+          }); 
 
         this.afd.list('volunteer').set('+972' + xlsxUsers[i]['MobilePhone'], xlsxUsers[i]);
         if (xlsxUsers[i]['DispatcherCode'] != '' && xlsxUsers[i]['DispatcherCode']) {

@@ -127,7 +127,7 @@ export class UserDetailsComponent implements OnInit {
     }
     else {
       debugger
-      this.createFirebaseUser(this.user.EmailAddress, this.user.IdentityNumber);
+      this.createFirebaseUser(this.user.EmailAddress || '+972'+this.user.MobilePhone.substr(1)+'@yedidim.org', this.user.IdentityNumber);
       this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
 
       if (this.user.permissions.indexOf('מוקדן') > -1) {
