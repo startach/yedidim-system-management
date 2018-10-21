@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
 
           if(data[0].permissions.indexOf('מנהל')>-1||data[0].permissions.indexOf('מנהל ראשי') > -1)
             this.router.navigate(['/main/users'])
-        });;
+        });
 
 
       }

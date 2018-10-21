@@ -2,14 +2,13 @@
   <mat-progress-bar class="example-margin" *ngIf="loading" color="primary" mode="indeterminate">
   </mat-progress-bar>
 </div>
-<div style="padding-left: 10%;padding-right: 10%; background-image: url('../../../assets/images/rawpixel-558597-unsplash.jpg')">
+<div style="padding-left: 10%;padding-right: 10%;">
   <!-- <input type="file" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx"> -->
-
   <mat-form-field style="width: 100%">
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="חפש תותח חסד">
   </mat-form-field>
 
-  <table mat-table [dataSource]="users" matSort style="opacity: 0.7;">
+  <table mat-table [dataSource]="users" matSort style="opacity: 0.9;" >
 
 
     <ng-container matColumnDef="FirstName">

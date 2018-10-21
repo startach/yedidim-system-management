@@ -11,6 +11,7 @@ import { DataService } from '../../shared/services/data.service';
 
 import * as XLSX from 'ts-xlsx';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 
@@ -34,17 +35,19 @@ export class UsersComponent implements OnInit, AfterViewInit {
   dispatcher: any;
   xcelMandatoryColumns: Array<string>;
   logErrors: Array<string>;
+  @BlockUI() blockUI: NgBlockUI;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
+    this.blockUI.start('...אנא המתן בזמן שהמתנדבים מתאספים')
     if (sessionStorage.getItem('email')) {
       afd.list<any>('volunteer').valueChanges().subscribe(
         res => {
           this.usersArr = res; this.users.data = this.usersArr
           this.loading = false;
-
+          this.blockUI.stop();
         }
       );
     }
@@ -99,7 +102,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     let fileReader = new FileReader();
     fileReader.onload = (e) => {
 
-
+      this.blockUI.start('טוען מתנדבים מקובץ אקסל');
       this.arrayBuffer = fileReader.result;
       var data = new Uint8Array(this.arrayBuffer);
       var arr = new Array();
@@ -137,7 +140,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
             console.log('Success!', value);
           }, err => {
             console.log('Something went wrong in:', err.message);
-          }); 
+          });
 
         this.afd.list('volunteer').set('+972' + xlsxUsers[i]['MobilePhone'], xlsxUsers[i]);
         if (xlsxUsers[i]['DispatcherCode'] != '' && xlsxUsers[i]['DispatcherCode']) {
@@ -160,6 +163,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
         //   alert('Invalid values in /n'+this.logErrors)
         // }
       }
+      this.blockUI.stop();
+      
     }
     fileReader.readAsArrayBuffer(this.file);
   }

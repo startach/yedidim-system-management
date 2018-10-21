@@ -51,7 +51,7 @@ export class UserDetailsComponent implements OnInit {
         StreetAddress: ['',],
         VehicleMake: ['',],
         YourVehicle: [''],
-        permissions: ['', Validators.required],
+        permissions: [''],
         managerPermissions: ['',],
         DispatcherCode: ['',]
       }
@@ -100,14 +100,14 @@ export class UserDetailsComponent implements OnInit {
     if (this.currentUser.permissions.indexOf('מנהל ראשי') > -1)
       return false;
     else {
-      if (permission === 'מנהל'||permission === 'מנהל ראשי')
+      if (permission === 'מנהל' || permission === 'מנהל ראשי')
         return true;
       else
         return false;
     }
   }
   isManager(): boolean {
-    if (this.user.permissions && this.user.permissions.indexOf('מנהל') > -1) {
+    if (this.user.permissions && this.user.permissions.indexOf('מוקדן') <= -1) {
       this.registerForm.controls['managerPermissions'].setValidators([Validators.required]);
       this.registerForm.updateValueAndValidity();
       return true;
@@ -120,15 +120,22 @@ export class UserDetailsComponent implements OnInit {
   }
 
   save(): void {
-  debugger
+    debugger
     if (this.registerForm.invalid) {
       this.errorMessage = 'אנא מלא את השדות המסומנים';
       return;
     }
     else {
-      debugger
-      this.createFirebaseUser(this.user.EmailAddress || '+972'+this.user.MobilePhone.substr(1)+'@yedidim.org', this.user.IdentityNumber);
-      this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
+      var isExistingUser = this.afd.list('volunteer', ref => ref.orderByChild('MobilePhone').equalTo(this.user.MobilePhone)).valueChanges().subscribe((data: volunteer[]) => {
+        if (!data || data.length == 0) {
+
+          this.createFirebaseUser('+972' + this.user.MobilePhone.substr(1) + '@yedidim.org', this.user.IdentityNumber);
+          this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
+        }else{
+          this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
+        }
+      });
+
 
       if (this.user.permissions.indexOf('מוקדן') > -1) {
         this.dispatcher = {
@@ -144,7 +151,7 @@ export class UserDetailsComponent implements OnInit {
         }
         this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
       }
-      close();
+      this.close();
     }
   }
 
