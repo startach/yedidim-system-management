@@ -107,7 +107,8 @@ export class UserDetailsComponent implements OnInit {
     }
   }
   isManager(): boolean {
-    if (this.user.permissions && this.user.permissions.indexOf('מוקדן') <= -1) {
+    if (this.user.permissions && this.user.permissions.indexOf('מנהל ראשי') > -1||
+    this.user.permissions.indexOf('מנהל') > -1) {
       this.registerForm.controls['managerPermissions'].setValidators([Validators.required]);
       this.registerForm.updateValueAndValidity();
       return true;

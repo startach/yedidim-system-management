@@ -35,18 +35,19 @@ export class UsersComponent implements OnInit, AfterViewInit {
   dispatcher: any;
   xcelMandatoryColumns: Array<string>;
   logErrors: Array<string>;
+  xlsxUsers: any; 
   @BlockUI() blockUI: NgBlockUI;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
-    this.blockUI.start('...אנא המתן בזמן שהמתנדבים מתאספים')
+    this.blockUI.start('...אנא המתן')
     if (sessionStorage.getItem('email')) {
       afd.list<any>('volunteer').valueChanges().subscribe(
         res => {
-          this.usersArr = res; this.users.data = this.usersArr
-          this.loading = false;
+          this.usersArr = res; 
+          this.users.data = this.usersArr
           this.blockUI.stop();
         }
       );
@@ -96,13 +97,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
 
   incomingfile(event) {
-    debugger
     this.file = event.target.files[0];
 
     let fileReader = new FileReader();
+    this.blockUI.start('טוען מתנדבים מקובץ אקסל');
+
     fileReader.onload = (e) => {
 
-      this.blockUI.start('טוען מתנדבים מקובץ אקסל');
       this.arrayBuffer = fileReader.result;
       var data = new Uint8Array(this.arrayBuffer);
       var arr = new Array();
@@ -111,10 +112,10 @@ export class UsersComponent implements OnInit, AfterViewInit {
       var workbook = XLSX.read(bstr, { type: "binary" });
       var first_sheet_name = workbook.SheetNames[0];
       var worksheet = workbook.Sheets[first_sheet_name];
-      var xlsxUsers = XLSX.utils.sheet_to_json(worksheet, { raw: true });
-      for (let i = 0; i < xlsxUsers.length; i++) {
+      this.xlsxUsers = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+      for (let i = 0; i < this.xlsxUsers.length; i++) {
         for (let j = 0; j < this.xcelMandatoryColumns.length; j++) {
-          if (!xlsxUsers[i][this.xcelMandatoryColumns[j]]) {
+          if (!this.xlsxUsers[i][this.xcelMandatoryColumns[j]]) {
 
             ///this.logErrors.push('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
             console.log('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
@@ -122,47 +123,50 @@ export class UsersComponent implements OnInit, AfterViewInit {
           }
         }
 
-        for (let index = 0; index < Object.keys(xlsxUsers[i]).length; index++) {
+        for (let index = 0; index < Object.keys(this.xlsxUsers[i]).length; index++) {
 
-          if (typeof (xlsxUsers[i][Object.keys(xlsxUsers[i])[index]] != 'string')) {
-            xlsxUsers[i][Object.keys(xlsxUsers[i])[index]] = String(xlsxUsers[i][Object.keys(xlsxUsers[i])[index]]);
+          if (typeof (this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]] != 'string')) {
+            this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]] = String(this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]]);
           }
         }
-        if (xlsxUsers[i]['DispatcherCode'] != '' && xlsxUsers[i]['DispatcherCode']) {
+        if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
           let obj2 = { 'permissions': ["מוקדן"] }
 
-          Object.assign(xlsxUsers[i], obj2);
+          Object.assign(this.xlsxUsers[i], obj2);
         }
 
 
-        this.af.auth.createUserWithEmailAndPassword('+972' + xlsxUsers[i]['MobilePhone'] + '@yedidim.org',
-          xlsxUsers[i]['IdentityNumber']).then(value => {
-            console.log('Success!', value);
-          }, err => {
-            console.log('Something went wrong in:', err.message);
-          });
+        // this.af.auth.createUserWithEmailAndPassword('+972' + this.xlsxUsers[i]['MobilePhone'] + '@yedidim.org',
+        //   this.xlsxUsers[i]['IdentityNumber']).then(value => {
+        //     console.log('Success!', value);
+        //   }, err => {
+        //     console.log('Something went wrong in:', err.message);
+        //   });
 
-        this.afd.list('volunteer').set('+972' + xlsxUsers[i]['MobilePhone'], xlsxUsers[i]);
-        if (xlsxUsers[i]['DispatcherCode'] != '' && xlsxUsers[i]['DispatcherCode']) {
-          this.dispatcher = {
-            NotificationStatus: '',
-            NotificationStatusTimestamp: '',
-            handleBot: '',
-            name: xlsxUsers[i]['FirstName'] + ' ' + xlsxUsers[i]['LastName'],
-            notifications: '',
-            phone: xlsxUsers[i]['MobilePhone'],
-            time: '',
-            token: '',
-            version: ''
-          }
+        // this.afd.list('volunteer').set('+972' + this.xlsxUsers[i]['MobilePhone'], this.xlsxUsers[i]);
+        // if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
+        //   this.dispatcher = {
+        //     NotificationStatus: '',
+        //     NotificationStatusTimestamp: '',
+        //     handleBot: '',
+        //     name: this.xlsxUsers[i]['FirstName'] + ' ' + this.xlsxUsers[i]['LastName'],
+        //     notifications: '',
+        //     phone: this.xlsxUsers[i]['MobilePhone'],
+        //     time: '',
+        //     token: '',
+        //     version: ''
+        //   }
 
 
-          this.afd.list('dispatchers').set(xlsxUsers[i]['DispatcherCode'], this.dispatcher);
-        }
+        //   this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
+        // }
+
         // if (!this.logErrors || this.logErrors.length==0) {
         //   alert('Invalid values in /n'+this.logErrors)
         // }
       }
+
+
       this.blockUI.stop();
       
     }
@@ -172,6 +176,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   deleteUser(key): void {
     debugger
     if (key) {
+      key = '+972'+key.substr(1);
       this.afd.list('volunteer').remove(key);
     }
     else {

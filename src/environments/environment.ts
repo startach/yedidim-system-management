@@ -2,6 +2,8 @@
 // `ng build ---prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+
+//*********** DATABASE CONNECTION FOR PRODUCTION MODE *************
 export const environment = {
   production: false,
   firebase : {
@@ -11,6 +13,17 @@ export const environment = {
     storageBucket: 'yedidim-production.appspot.com'
 }
 };
+
+//*********** DATABASE CONNECTION FOR TESTING MODE *************
+// export const environment = {
+//   production: false,
+//   firebase : {
+//     apiKey: "AIzaSyAwKEsWodtnrprOhYXA5tFb9zbUnLqOBk4",
+//     authDomain: "yedidim-sandbox-2.firebaseapp.com",
+//     databaseURL: "https://yedidim-sandbox-2.firebaseio.com",
+//     storageBucket: "yedidim-sandbox-2.appspot.com"
+// }
+// };
 
 /*
  * In development mode, for easier debugging, you can ignore zone related error
