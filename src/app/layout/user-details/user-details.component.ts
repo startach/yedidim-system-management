@@ -107,11 +107,14 @@ export class UserDetailsComponent implements OnInit {
     }
   }
   isManager(): boolean {
-    if (this.user.permissions && this.user.permissions.indexOf('מנהל ראשי') > -1||
-    this.user.permissions.indexOf('מנהל') > -1) {
-      this.registerForm.controls['managerPermissions'].setValidators([Validators.required]);
-      this.registerForm.updateValueAndValidity();
-      return true;
+    if (this.user.permissions) {
+      if (this.user.permissions.indexOf('מנהל ראשי') > -1 ||
+        this.user.permissions.indexOf('מנהל') > -1) {
+        this.registerForm.controls['managerPermissions'].setValidators([Validators.required]);
+        this.registerForm.updateValueAndValidity();
+        return true;
+      }
+      return false;
     }
     return false;
   }
@@ -132,7 +135,7 @@ export class UserDetailsComponent implements OnInit {
 
           this.createFirebaseUser('+972' + this.user.MobilePhone.substr(1) + '@yedidim.org', this.user.IdentityNumber);
           this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
-        }else{
+        } else {
           this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
         }
       });
