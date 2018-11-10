@@ -18,17 +18,18 @@
   } 
   ::ng-deep .mat-raised-button{
     margin: 5%;
-    height: 15%;
+    height: 25%;
+    min-width: 10px;
 } 
-
   .card{
-    height: 100%; 
-    opacity: 0.9; 
-    background-color: #fff;
+    height: 40%; 
+    opacity: 0.7; 
+    background-color: transparent;
     position: fixed ;
-    left: 2%;
-    top: 15%;
-    width: 10%;
+    left: 9%;
+    top: 11%;
+    width: 5%;
+    border-color: blueviolet
   }
 
 table{

@@ -8,6 +8,7 @@ import { AngularFireList } from 'angularfire2/database';
 import { volunteer } from '../../shared/models/volunteer';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { DataService } from '../../shared/services/data.service';
+import { ConfirmDialogComponent } from '../../shared/confirm-dialog/confirm-dialog.component'
 
 import * as XLSX from 'ts-xlsx';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -27,7 +28,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 export class UsersComponent implements OnInit, AfterViewInit {
   private loading: boolean = false;
   user: any;
-  displayedColumns: string[] = ['select','FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions', 'Settings'];
+  displayedColumns: string[] = ['select', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions'];
   usersArr: volunteer[];
   users = new MatTableDataSource<volunteer>(this.usersArr);
   arrayBuffer: any;
@@ -36,9 +37,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
   dispatcher: any;
   xcelMandatoryColumns: Array<string>;
   logErrors: Array<string>;
-  xlsxUsers: any; 
+  xlsxUsers: any;
   selection = new SelectionModel<volunteer>(true, []);
-  
+
   @BlockUI() blockUI: NgBlockUI;
 
 
@@ -51,7 +52,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     if (sessionStorage.getItem('email')) {
       afd.list<any>('volunteer').valueChanges().subscribe(
         res => {
-          this.usersArr = res; 
+          this.usersArr = res;
           this.users.data = this.usersArr
           this.blockUI.stop();
         }
@@ -63,6 +64,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.data.currentUser.subscribe(user => this.user = user)
     this.xcelMandatoryColumns = ['DriveCode', 'FirstName', 'LastName', 'IdentityNumber', 'MobilePhone']
   }
+  uploadFile() {
+    document.getElementById('fileToUpload').click()
+  }
 
   openDialog(row: any): void {
     if (!this.checkManagerPermissions())
@@ -72,6 +76,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
       dialogRef = this.dialog.open(UserDetailsComponent, {
         data: Object.assign({}, row)
       });
+      this.selection.clear();
     } else {
       dialogRef = this.dialog.open(UserDetailsComponent, {
         data: null
@@ -173,20 +178,53 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
 
       this.blockUI.stop();
-      
+
     }
     fileReader.readAsArrayBuffer(this.file);
   }
 
-  deleteUser(key): void {
+  deleteUser(user): void {
     debugger
-    if (key) {
-      key = '+972'+key.substr(1);
-      this.afd.list('volunteer').remove(key);
+    if (user.MobilePhone) {
+      let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        disableClose: false
+      });
+      dialogRef.componentInstance.confirmMessage = "האם אתה בטוח שאתה רוצה למחוק את " +
+        user.FirstName.bold() + " " + user.LastName.bold() + "?";
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+
+          let key = '+972' + user.MobilePhone.substr(1);
+          this.afd.list('volunteer').remove(key);
+      this.selection.clear()
+
+          alert(user.FirstName + " " + user.LastName + " נמחק בהצלחה!")
+        }
+        dialogRef = null;
+      });
     }
     else {
-      return
+      alert("!לא התבצעה מחיקה, בדוק את תקינות הפעולה")
     }
+  }
+  deleteMultiUsers(users) {
+    if (users.length == 1) {
+      this.deleteUser(users[0])
+      return;
+    }
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      disableClose: false
+    });
+    dialogRef.componentInstance.confirmMessage = "האם אתה בטוח שאתה רוצה למחוק " + users.length + " משתמשים?";
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (users.length > 0) {
+          this.selection.clear()
+
+        }
+      }
+      dialogRef = null;
+    });
   }
 
   isAllSelected() {
@@ -196,7 +234,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   }
   masterToggle() {
     this.isAllSelected() ?
-        this.selection.clear() :
-        this.users.data.forEach(row => this.selection.select(row));
+      this.selection.clear() :
+      this.users.data.forEach(row => this.selection.select(row));
   }
 }

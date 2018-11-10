@@ -1,0 +1,10 @@
+<div style="text-align: right">
+
+  <h1 md-dialog-title>מחיקה</h1>
+  <div md-dialog-content style="direction: rtl" [innerHtml]="confirmMessage"></div>
+</div>
+<br/>
+  <div md-dialog-actions>
+    <button mat-button color="warn" (click)="dialogRef.close(true)">מחק</button>
+    <button mat-button (click)="dialogRef.close(false)">בטל</button>
+  </div>

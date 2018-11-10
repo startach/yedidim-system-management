@@ -1,6 +1,6 @@
 <mat-toolbar class="center">
   <h2 mat-dialog-title style="text-align:center">הוסף משתמש</h2>
-  
+
   <h2 style="color: red">{{errorMessage}}</h2>
 </mat-toolbar>
 <mat-dialog-content>
@@ -49,13 +49,18 @@
         required>
     </mat-form-field>
     <mat-form-field class="col-md-4">
-      <mat-select matInput type="text" placeholder="הרשאות" formControlName="permissions" [(ngModel)]="user.permissions"
-        multiple>
+      <mat-select matInput type="text" placeholder="הרשאות" formControlName="permissions" [(ngModel)]="user.permissions" multiple>
         <mat-option *ngFor="let permission of permissions" value={{permission}} [disabled]="isPrimeManager(permission)">{{permission}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="col-md-4" *ngIf="isDispatcher()">
       <input matInput type="text" formControlName="DispatcherCode" [(ngModel)]="user.DispatcherCode" placeholder="מס' מוקדן">
+    </mat-form-field>
+    <mat-form-field class="col-md-4" *ngIf="isDispatcher()">
+        <mat-select matInput type="text" placeholder="הרשאת בוט" formControlName="HandleBot" [(ngModel)]="user.handleBot">
+            <mat-option value="true">כן</mat-option>
+            <mat-option value="false">לא</mat-option>
+          </mat-select>
     </mat-form-field>
     <mat-form-field class="col-md-4" *ngIf="isManager()">
       <mat-select matInput type="text" placeholder="הרשאת מנהל" formControlName="managerPermissions" [(ngModel)]="user.managerPermissions">

@@ -23,6 +23,7 @@ import { LayoutComponent } from './layout/layout.component'
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
 import { BlockUIModule } from 'ng-block-ui';
+import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -35,6 +36,7 @@ import { BlockUIModule } from 'ng-block-ui';
     UserDetailsComponent,
     HeaderComponent,
     LayoutComponent,
+    ConfirmDialogComponent,
 
   ],
   imports: [
@@ -52,7 +54,8 @@ import { BlockUIModule } from 'ng-block-ui';
     BlockUIModule.forRoot()
   ],
   entryComponents: [
-    UserDetailsComponent
+    UserDetailsComponent,
+    ConfirmDialogComponent
   ],
   exports: [
   ],

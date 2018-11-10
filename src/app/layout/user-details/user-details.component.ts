@@ -55,7 +55,8 @@ export class UserDetailsComponent implements OnInit {
         YourVehicle: [''],
         permissions: [''],
         managerPermissions: ['',],
-        DispatcherCode: ['',]
+        DispatcherCode: ['',],
+        HandleBot:['',]
       }
     );
 
@@ -83,9 +84,10 @@ export class UserDetailsComponent implements OnInit {
         StreetAddress: '',
         VehicleMake: '',
         YourVehicle: '',
-        permissions: ' ',
+        permissions: [' '],
         managerPermissions: ' ',
-        DispatcherCode: ' '
+        DispatcherCode: ' ',
+        HandleBot:''
       }
     }
   }
