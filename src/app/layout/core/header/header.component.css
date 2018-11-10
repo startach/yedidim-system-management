@@ -1,6 +1,6 @@
-/* ::ng-deep .mat-toolbar{
-    direction: rtl;
-} */
+::ng-deep .mat-toolbar{
+    height: 5%;
+}
 
 .mat-header-cell{
     text-align: center;

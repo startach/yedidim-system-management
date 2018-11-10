@@ -6,6 +6,7 @@ import { volunteer } from '../../shared/models/volunteer'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { DataService } from '../../shared/services/data.service';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 
 @Component({
@@ -17,8 +18,9 @@ export class UserDetailsComponent implements OnInit {
   registerForm: FormGroup;
   user: any;
   dispatcher: any;
+  @BlockUI() blockUI: NgBlockUI;
   constructor(private dataService: DataService, public dialogRef: MatDialogRef<UserDetailsComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private afd: AngularFireDatabase,
+    @Inject(MAT_DIALOG_DATA) public data: volunteer, private afd: AngularFireDatabase,
     private formBuilder: FormBuilder, private auth: AngularFireAuth) { }
   public permissions: string[];
   public managerPermissions: string[];
@@ -28,8 +30,8 @@ export class UserDetailsComponent implements OnInit {
 
 
   ngOnInit() {
-    this.dataService.currentUser.subscribe(user => this.currentUser = user)
 
+    this.dataService.currentUser.subscribe(user => this.currentUser = user)
     this.permissions = ['מנהל ראשי', 'מנהל', 'מוקדן'];
     this.managerPermissions = ['צפיה', 'עריכה'];
     this.registerForm = this.formBuilder.group(
@@ -47,7 +49,7 @@ export class UserDetailsComponent implements OnInit {
         Equipment: ['',],
         IdentityNumber: ['', Validators.required],
         LicenseNumber: ['',],
-        MobilePhone: ['*מספר טלפון לא תקין', Validators.required],
+        MobilePhone: ['', Validators.required],
         StreetAddress: ['',],
         VehicleMake: ['',],
         YourVehicle: [''],
@@ -81,7 +83,7 @@ export class UserDetailsComponent implements OnInit {
         StreetAddress: '',
         VehicleMake: '',
         YourVehicle: '',
-        permissions: '',
+        permissions: ' ',
         managerPermissions: ' ',
         DispatcherCode: ' '
       }
@@ -94,6 +96,9 @@ export class UserDetailsComponent implements OnInit {
       this.registerForm.updateValueAndValidity();
       return true;
     }
+    this.registerForm.controls['DispatcherCode'].clearValidators();
+    this.registerForm.controls['DispatcherCode'].setValue(null);
+    this.registerForm.controls['DispatcherCode'].updateValueAndValidity({ onlySelf: true, emitEvent: false });
     return false;
   }
   isPrimeManager(permission: string): boolean {
@@ -114,8 +119,11 @@ export class UserDetailsComponent implements OnInit {
         this.registerForm.updateValueAndValidity();
         return true;
       }
-      return false;
     }
+    this.registerForm.controls['managerPermissions'].clearValidators();
+    this.registerForm.controls['managerPermissions'].setValue(null);
+
+    this.registerForm.controls['managerPermissions'].updateValueAndValidity({ onlySelf: true, emitEvent: false });
     return false;
   }
 
@@ -124,38 +132,56 @@ export class UserDetailsComponent implements OnInit {
   }
 
   save(): void {
-    debugger
     if (this.registerForm.invalid) {
       this.errorMessage = 'אנא מלא את השדות המסומנים';
       return;
     }
     else {
-      var isExistingUser = this.afd.list('volunteer', ref => ref.orderByChild('MobilePhone').equalTo(this.user.MobilePhone)).valueChanges().subscribe((data: volunteer[]) => {
-        if (!data || data.length == 0) {
+      try {
+        this.blockUI.start('...טוען');
 
-          this.createFirebaseUser('+972' + this.user.MobilePhone.substr(1) + '@yedidim.org', this.user.IdentityNumber);
-          this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
-        } else {
-          this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
+        for (let key in this.user) {
+          if (!this.user[key]) {
+            this.user[key] = '';
+
+          }
         }
-      });
+        this.afd.list('volunteer', ref => ref.orderByChild('MobilePhone')
+          .equalTo(this.user.MobilePhone))
+          .valueChanges()
+          .subscribe((data: volunteer[]) => {
+            if (!data || data.length == 0) {
+              this.createFirebaseUser('+972' + this.user.MobilePhone.substr(1) + '@yedidim.org', this.user.IdentityNumber);
+            }
+          });
 
-
-      if (this.user.permissions.indexOf('מוקדן') > -1) {
-        this.dispatcher = {
-          NotificationStatus: '',
-          NotificationStatusTimestamp: '',
-          handleBot: '',
-          name: this.user.FirstName + ' ' + this.user.LastName,
-          notifications: '',
-          phone: this.user.MobilePhone,
-          time: '',
-          token: '',
-          version: ''
+        this.afd.list('volunteer').set('+972' + this.user.MobilePhone.substr(1), this.user);
+        if (this.user.permissions) {
+          if (this.user.permissions.indexOf('מוקדן') > -1) {
+            this.dispatcher = {
+              NotificationStatus: '',
+              NotificationStatusTimestamp: '',
+              handleBot: '',
+              name: this.user.FirstName + ' ' + this.user.LastName,
+              notifications: '',
+              phone: this.user.MobilePhone,
+              time: '',
+              token: '',
+              version: ''
+            }
+            this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
+            this.createFirebaseUser(this.user.DispatcherCode + '@yedidim.org', this.user.MobilePhone);
+          }
         }
-        this.afd.list('dispatchers').set(this.user.DispatcherCode, this.dispatcher);
+        this.blockUI.stop();
+        this.close();
+      } catch (error) {
+        this.blockUI.stop();
+        console.log(error)
+        this.close();
       }
-      this.close();
+
+
     }
   }
 

@@ -12,6 +12,7 @@ import { DataService } from '../../shared/services/data.service';
 import * as XLSX from 'ts-xlsx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 
@@ -26,7 +27,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 export class UsersComponent implements OnInit, AfterViewInit {
   private loading: boolean = false;
   user: any;
-  displayedColumns: string[] = ['FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions', 'Settings'];
+  displayedColumns: string[] = ['select','FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions', 'Settings'];
   usersArr: volunteer[];
   users = new MatTableDataSource<volunteer>(this.usersArr);
   arrayBuffer: any;
@@ -36,7 +37,11 @@ export class UsersComponent implements OnInit, AfterViewInit {
   xcelMandatoryColumns: Array<string>;
   logErrors: Array<string>;
   xlsxUsers: any; 
+  selection = new SelectionModel<volunteer>(true, []);
+  
   @BlockUI() blockUI: NgBlockUI;
+
+
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -182,5 +187,16 @@ export class UsersComponent implements OnInit, AfterViewInit {
     else {
       return
     }
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.users.data.length;
+    return numSelected === numRows;
+  }
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.users.data.forEach(row => this.selection.select(row));
   }
 }

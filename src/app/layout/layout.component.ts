@@ -19,7 +19,6 @@ export class LayoutComponent implements OnInit {
     this.user = user
       if (!this.user.FirstName) {
         let email = sessionStorage.getItem('email');
-        debugger
         if (!email) {
 
           this.router.navigate(['/login'])
