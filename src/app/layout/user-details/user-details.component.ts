@@ -87,7 +87,7 @@ export class UserDetailsComponent implements OnInit {
         permissions: [' '],
         managerPermissions: ' ',
         DispatcherCode: ' ',
-        HandleBot:''
+        handleBot:''
       }
     }
   }
@@ -135,7 +135,7 @@ export class UserDetailsComponent implements OnInit {
 
   save(): void {
     if (this.registerForm.invalid) {
-      this.errorMessage = 'אנא מלא את השדות המסומנים';
+      this.errorMessage = '\r אנא מלא את השדות המסומנים';
       return;
     }
     else {
@@ -147,6 +147,9 @@ export class UserDetailsComponent implements OnInit {
             this.user[key] = '';
 
           }
+        }
+        if (this.user.DispatcherCode) {
+          this.user.DispatcherCode=this.user.DispatcherCode.trim();
         }
         this.afd.list('volunteer', ref => ref.orderByChild('MobilePhone')
           .equalTo(this.user.MobilePhone))
@@ -163,7 +166,7 @@ export class UserDetailsComponent implements OnInit {
             this.dispatcher = {
               NotificationStatus: '',
               NotificationStatusTimestamp: '',
-              handleBot: '',
+              handleBot: this.user.handleBot,
               name: this.user.FirstName + ' ' + this.user.LastName,
               notifications: '',
               phone: this.user.MobilePhone,

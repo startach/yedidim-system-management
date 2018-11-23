@@ -6,10 +6,11 @@
   <button mat-raised-button color="primary" (click)="uploadFile()" matTooltip="העלה קובץ בפורמט אקסל">
     <mat-icon>file_upload</mat-icon>
   </button>
-  <button mat-raised-button color="primary"  (click)="openDialog()" matTooltip="הוסף מתנדב" *ngIf="checkManagerPermissions()">
+  <button mat-raised-button color="primary" (click)="openDialog()" matTooltip="הוסף מתנדב" *ngIf="checkManagerPermissions()">
     <mat-icon aria-label="הוסף משתמש">add</mat-icon>
   </button>
-  <button mat-raised-button color="primary" (click)="openDialog(selection.selected[0])" *ngIf="checkManagerPermissions()" [disabled]="selection.selected.length == 0 ||selection.selected.length > 1">
+  <button mat-raised-button color="primary" (click)="openDialog(selection.selected[0])" *ngIf="checkManagerPermissions()"
+    [disabled]="selection.selected.length == 0 ||selection.selected.length > 1">
     <mat-icon matTooltip="ערוך מתנדב">create</mat-icon>
   </button>
   <button mat-raised-button color="warn" (click)="deleteMultiUsers(selection.selected)" [disabled]="selection.selected.length == 0"
@@ -17,7 +18,7 @@
     <mat-icon>delete</mat-icon>
   </button>
   <input id="fileToUpload" type="file" (change)="incomingfile($event)" style="display:none;" onclick="this.value=null"
-  accept=".xlsx" multiple>
+    accept=".xlsx" multiple>
 </div>
 <div style="padding-left: 15%;padding-right: 15%;padding-top: 5%;">
   <!-- <input type="file" (change)="incomingfile($event)" placeholder="Upload file" accept=".xlsx"> -->
@@ -71,12 +72,12 @@
         <button mat-mini-fab type="primary" onclick="document.getElementById('fileToUpload').click()" matTooltip="העלה קובץ בפורמט אקסל">
           <mat-icon>file_upload</mat-icon>
         </button>
-        
+
         <button mat-mini-fab color="primary" *ngIf="checkManagerPermissions()">
           <mat-icon aria-label="הוסף משתמש" (click)="openDialog()" matTooltip="הוסף מתנדב">add</mat-icon>
         </button>
       </th>
-<!-- 
+      <!-- 
       <td mat-cell *matCellDef="let row">
         <button mat-icon-button *ngIf="checkManagerPermissions()">
           <mat-icon (click)="openDialog(row)" matTooltip="ערוך מתנדב">create</mat-icon>
@@ -93,3 +94,20 @@
 
 
 </div>
+
+<ng-template #myDialog style="direction: rtl">
+  <h2 matDialogTitle style="text-align:right">העלאת משתמשים</h2>
+  <mat-dialog-content style="direction: rtl">
+    <p style="text-align:right">העלאת המשתמשים בוצעה בהצלחה!</p>
+    <h1 style="text-align: center">{{this.xlsxUsers.length}}</h1>
+    <h3 style="text-align:center">משתמשים נוספו בהצלחה!</h3>
+    <ul>
+      <li *ngFor="let user of xlsxUsers; let i = index" style="text-align:right">
+        {{user.FirstName}} {{user.LastName}}, מס' כונן - {{user.DriveCode}}
+      </li>
+    </ul>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button matDialogClose color="primary">אוקיי</button>
+  </mat-dialog-actions>
+</ng-template>

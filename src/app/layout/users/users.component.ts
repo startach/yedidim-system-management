@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { User } from '../../shared/models/user';
 import { MockDataService } from '../../shared/services/mock-data.service';
 import { MatDialog } from '@angular/material';
@@ -26,6 +26,7 @@ import { SelectionModel } from '@angular/cdk/collections';
   styleUrls: ['./users.component.css']
 })
 export class UsersComponent implements OnInit, AfterViewInit {
+  @ViewChild('myDialog') myDialog: TemplateRef<any>;
   private loading: boolean = false;
   user: any;
   displayedColumns: string[] = ['select', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions'];
@@ -37,7 +38,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   dispatcher: any;
   xcelMandatoryColumns: Array<string>;
   logErrors: Array<string>;
-  xlsxUsers: any;
+  public xlsxUsers: any;
   selection = new SelectionModel<volunteer>(true, []);
 
   @BlockUI() blockUI: NgBlockUI;
@@ -127,7 +128,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
         for (let j = 0; j < this.xcelMandatoryColumns.length; j++) {
           if (!this.xlsxUsers[i][this.xcelMandatoryColumns[j]]) {
 
-            ///this.logErrors.push('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
+            this.logErrors.push('line number ' + i + 1 + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
             console.log('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
             continue;
           }
@@ -146,34 +147,39 @@ export class UsersComponent implements OnInit, AfterViewInit {
         }
 
 
-        // this.af.auth.createUserWithEmailAndPassword('+972' + this.xlsxUsers[i]['MobilePhone'] + '@yedidim.org',
-        //   this.xlsxUsers[i]['IdentityNumber']).then(value => {
-        //     console.log('Success!', value);
-        //   }, err => {
-        //     console.log('Something went wrong in:', err.message);
-        //   });
+        this.xlsxUsers[i]['MobilePhone'] = '0' + this.xlsxUsers[i]['MobilePhone'];
+        this.af.auth.createUserWithEmailAndPassword('+972' + this.xlsxUsers[i]['MobilePhone'].substr(1) + '@yedidim.org',
+          this.xlsxUsers[i]['IdentityNumber']).then(value => {
+            //console.log('Success!', value);
+          }, err => {
+            //console.log('Something went wrong in:', err.message);
+          });
+        this.afd.list('volunteer').set('+972' + this.xlsxUsers[i]['MobilePhone'].substr(1), this.xlsxUsers[i]);
+        if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
+          this.dispatcher = {
+            NotificationStatus: '',
+            NotificationStatusTimestamp: '',
+            handleBot: 'false',
+            name: this.xlsxUsers[i]['FirstName'] + ' ' + this.xlsxUsers[i]['LastName'],
+            notifications: '',
+            phone: this.xlsxUsers[i]['MobilePhone'],
+            time: '',
+            token: '',
+            version: ''
+          }
 
-        // this.afd.list('volunteer').set('+972' + this.xlsxUsers[i]['MobilePhone'], this.xlsxUsers[i]);
-        // if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
-        //   this.dispatcher = {
-        //     NotificationStatus: '',
-        //     NotificationStatusTimestamp: '',
-        //     handleBot: '',
-        //     name: this.xlsxUsers[i]['FirstName'] + ' ' + this.xlsxUsers[i]['LastName'],
-        //     notifications: '',
-        //     phone: this.xlsxUsers[i]['MobilePhone'],
-        //     time: '',
-        //     token: '',
-        //     version: ''
-        //   }
 
+          this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
+          this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org',this.xlsxUsers[i]['MobilePhone'])
 
-        //   this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
-        // }
+        }
 
-        // if (!this.logErrors || this.logErrors.length==0) {
-        //   alert('Invalid values in /n'+this.logErrors)
-        // }
+      }
+      if (this.logErrors) {
+        alert('Invalid values in: \n  ' + this.logErrors.map(err=>err+'\n'))
+      }
+      else {
+        this.dialog.open(this.myDialog);
       }
 
 
@@ -196,7 +202,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
           let key = '+972' + user.MobilePhone.substr(1);
           this.afd.list('volunteer').remove(key);
-      this.selection.clear()
+          this.selection.clear()
 
           alert(user.FirstName + " " + user.LastName + " נמחק בהצלחה!")
         }
@@ -219,6 +225,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         if (users.length > 0) {
+          for (let index = 0; index < users.length; index++) {
+            this.afd.list('volunteer').remove('+972' + users[index].MobilePhone);
+
+            if (users[index].DispatcherCode) {
+              this.afd.list('dispatchers').remove(users[index].DispatcherCode);
+            }
+          }
           this.selection.clear()
 
         }
@@ -229,12 +242,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.users.data.length;
+    const numRows = this.users.filteredData.length;
     return numSelected === numRows;
   }
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.users.data.forEach(row => this.selection.select(row));
+      this.users.filteredData.forEach(row => this.selection.select(row));
   }
 }
