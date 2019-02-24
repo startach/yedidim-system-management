@@ -24,6 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
 import { BlockUIModule } from 'ng-block-ui';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
+import { AngularFireFunctionsModule } from 'angularfire2/functions';
 
 
 
@@ -51,7 +52,9 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.c
     FormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    BlockUIModule.forRoot()
+    BlockUIModule.forRoot(),
+    AngularFireFunctionsModule
+    
   ],
   entryComponents: [
     UserDetailsComponent,

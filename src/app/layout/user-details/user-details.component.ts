@@ -2,11 +2,13 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { FirebaseApp } from 'angularfire2';
 import { volunteer } from '../../shared/models/volunteer'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { DataService } from '../../shared/services/data.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { AngularFireFunctions } from 'angularfire2/functions';
 
 
 @Component({
@@ -21,11 +23,15 @@ export class UserDetailsComponent implements OnInit {
   @BlockUI() blockUI: NgBlockUI;
   constructor(private dataService: DataService, public dialogRef: MatDialogRef<UserDetailsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: volunteer, private afd: AngularFireDatabase,
-    private formBuilder: FormBuilder, private auth: AngularFireAuth) { }
+    private formBuilder: FormBuilder, private auth: AngularFireAuth, @Inject(FirebaseApp) private firebaseApp: any,
+    private fns: AngularFireFunctions) { }
   public permissions: string[];
   public managerPermissions: string[];
   public errorMessage: string;
   private currentUser: any;
+  public originPhoneNumber: string;
+  public originId: string;
+  public originDispatcherCode: string;
 
 
 
@@ -56,7 +62,7 @@ export class UserDetailsComponent implements OnInit {
         permissions: [''],
         managerPermissions: ['',],
         DispatcherCode: ['',],
-        HandleBot:['',]
+        handleBot: ['',]
       }
     );
 
@@ -65,6 +71,9 @@ export class UserDetailsComponent implements OnInit {
       if (!this.user.managerPermissions) {
         this.user.managerPermissions = '';
       }
+      this.originPhoneNumber = this.user.MobilePhone;
+      this.originId = this.user.IdentityNumber;
+      this.originDispatcherCode = this.user.DispatcherCode;
 
     } else {
       this.user = {
@@ -87,7 +96,7 @@ export class UserDetailsComponent implements OnInit {
         permissions: [' '],
         managerPermissions: ' ',
         DispatcherCode: ' ',
-        handleBot:''
+        handleBot: ''
       }
     }
   }
@@ -148,8 +157,9 @@ export class UserDetailsComponent implements OnInit {
 
           }
         }
+        this.isChangeRootData(this.user);
         if (this.user.DispatcherCode) {
-          this.user.DispatcherCode=this.user.DispatcherCode.trim();
+          this.user.DispatcherCode = this.user.DispatcherCode.trim();
         }
         this.afd.list('volunteer', ref => ref.orderByChild('MobilePhone')
           .equalTo(this.user.MobilePhone))
@@ -199,6 +209,24 @@ export class UserDetailsComponent implements OnInit {
 
   }
 
+  isChangeRootData(user: any) {
+    var userNeedReset = false;
+    if (this.originPhoneNumber && user.MobilePhone != this.originPhoneNumber) {
+      this.afd.list('volunteer').remove('+972' + this.originPhoneNumber.toString().substr(1));
+      userNeedReset = true
+    }
+    if (this.originId && user.IdentityNumber != this.originId) {
+      userNeedReset = true
+    }
+    if (user.permissions.indexOf('מוקדן') > -1) {
+      if (this.originDispatcherCode && user.DispatcherCode != this.originDispatcherCode) {
+        this.afd.list('dispatchers').remove(this.originDispatcherCode.toString());
+      }
+    }
+
+    const callable = this.fns.httpsCallable('deleteUser');
+    callable({ email: 'pzm236@gmail.com' });
+  }
 
 
 }

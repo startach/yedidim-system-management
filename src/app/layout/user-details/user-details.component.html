@@ -20,8 +20,6 @@
     </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="מספר זהות" formControlName="IdentityNumber"  [(ngModel)]="user.IdentityNumber" required>
-      <!-- <mat-error>מספר לא תקין</mat-error> -->
-
     </mat-form-field>
     <mat-form-field class="col-md-4">
       <input matInput type="text" placeholder="כתובת" formControlName="StreetAddress" [(ngModel)]="user.StreetAddress">
@@ -57,7 +55,7 @@
       <input matInput type="text" formControlName="DispatcherCode" [(ngModel)]="user.DispatcherCode" placeholder="מס' מוקדן">
     </mat-form-field>
     <mat-form-field class="col-md-4" *ngIf="isDispatcher()">
-        <mat-select matInput type="text" placeholder="הרשאת בוט" formControlName="HandleBot" [(ngModel)]="user.handleBot">
+        <mat-select matInput type="text" placeholder="הרשאת בוט" formControlName="handleBot" [(ngModel)]="user.handleBot">
             <mat-option value="true">כן</mat-option>
             <mat-option value="false">לא</mat-option>
           </mat-select>

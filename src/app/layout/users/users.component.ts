@@ -14,6 +14,7 @@ import * as XLSX from 'ts-xlsx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SelectionModel } from '@angular/cdk/collections';
+import { AngularFireFunctions } from 'angularfire2/functions';
 
 
 
@@ -40,7 +41,6 @@ export class UsersComponent implements OnInit, AfterViewInit {
   logErrors: Array<string>;
   public xlsxUsers: any;
   selection = new SelectionModel<volunteer>(true, []);
-
   @BlockUI() blockUI: NgBlockUI;
 
 
@@ -48,7 +48,14 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
+  constructor(private mockDataService: MockDataService,
+    public dialog: MatDialog,
+    private afd: AngularFireDatabase,
+    private data: DataService,
+    private af: AngularFireAuth,
+    private fns: AngularFireFunctions) {
+    const callable = this.fns.httpsCallable('deleteUser');
+    callable({ email: 'pzm236@gmail.com' });
     this.blockUI.start('...אנא המתן')
     if (sessionStorage.getItem('email')) {
       afd.list<any>('volunteer').valueChanges().subscribe(
@@ -170,13 +177,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
 
           this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
-          this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org',this.xlsxUsers[i]['MobilePhone'])
+          this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org', this.xlsxUsers[i]['MobilePhone'])
 
         }
 
       }
       if (this.logErrors) {
-        alert('Invalid values in: \n  ' + this.logErrors.map(err=>err+'\n'))
+        alert('Invalid values in: \n  ' + this.logErrors.map(err => err + '\n'))
       }
       else {
         this.dialog.open(this.myDialog);
