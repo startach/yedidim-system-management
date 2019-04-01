@@ -56,7 +56,7 @@ export class UserDetailsComponent implements OnInit {
         permissions: [''],
         managerPermissions: ['',],
         DispatcherCode: ['',],
-        HandleBot:['',]
+        handleBot:['',]
       }
     );
 

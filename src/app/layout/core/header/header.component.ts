@@ -21,5 +21,21 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login'])
   //  this.angularFire.auth.signOut().then(()=> this.router.navigate(['/login']))
   }
+  openPage(pageName:string){
+switch (pageName) {
+  case 'volunteers':
+    this.router.navigate(['main/users']);
+    break;
+    case 'dispatchers':
+    this.router.navigate(['main/dispatchers']);
+    break;
+    case 'managers':
+    this.router.navigate(['main/managers']);
+    break;
+
+  default:
+    break;
+}
+  }
 
 }

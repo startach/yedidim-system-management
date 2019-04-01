@@ -5,12 +5,14 @@ import { UsersComponent } from "./layout/users/users.component";
 import { ManagersComponent } from "./layout/managers/managers.component";
 import { LoginComponent } from "./login/login.component";
 import { LayoutComponent } from './layout/layout.component'
+import { DispatchersComponent } from './layout/dispatchers/dispatchers.component';
 const appRoutes: Routes = [
   { path: "", redirectTo: "/login", pathMatch: "full" },
   {
     path: 'main', component: LayoutComponent, children: [
       { path: '', redirectTo: '/main/users', pathMatch: 'full' },
       { path: "users", component: UsersComponent },
+      { path: "dispatchers", component: DispatchersComponent },
       { path: "managers", component: ManagersComponent }
     ]
   },

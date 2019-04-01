@@ -1,9 +1,18 @@
 <mat-sidenav-container class="example-container">
     <mat-sidenav #sidenav mode="side" >
       
-      <span class="">
+      <div class="">
+        <button mat-button (click)="openPage('volunteers')">מתנדבים</button>
+      </div>
+      <div class="">
+        <button mat-button (click)="openPage('dispatchers')">מוקדנים</button>
+      </div>
+      <div class="">
+        <button mat-button (click)="openPage('managers')">מנהלים</button>
+      </div>
+      <div class="">
         <button mat-button (click)="logout()"> <mat-icon>logout</mat-icon> התנתק</button>
-      </span>
+      </div>
     </mat-sidenav>
   <mat-sidenav-content style=" background-image: url('../../../assets/images/jess-watters-665170-unsplash.jpg');background-attachment: fixed;background-size: cover">
 <!-- <img src="../../../../assets/images/jess-watters-665170-unsplash.jpg" -->

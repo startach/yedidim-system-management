@@ -24,7 +24,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
 import { BlockUIModule } from 'ng-block-ui';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
-
+import { DispatchersComponent } from './layout/dispatchers/dispatchers.component';
+import {MDBBootstrapModule} from 'angular-bootstrap-md'
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.c
     HeaderComponent,
     LayoutComponent,
     ConfirmDialogComponent,
+    DispatchersComponent,
 
   ],
   imports: [
@@ -51,7 +53,8 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.c
     FormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    BlockUIModule.forRoot()
+    BlockUIModule.forRoot(),
+    MDBBootstrapModule
   ],
   entryComponents: [
     UserDetailsComponent,
