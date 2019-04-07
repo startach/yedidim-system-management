@@ -43,6 +43,10 @@
     </ng-container>
 
 
+    <ng-container matColumnDef="index">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> # </th>
+      <td mat-cell *matCellDef="let element;index as i;"> {{i +1}} </td>
+    </ng-container>
     <ng-container matColumnDef="FirstName">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>שם פרטי </th>
       <td mat-cell *matCellDef="let element"> {{element.FirstName}} </td>
@@ -62,6 +66,10 @@
     <ng-container matColumnDef="MobilePhone">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> פלאפון </th>
       <td mat-cell *matCellDef="let element"> {{element.MobilePhone}} </td>
+    </ng-container>
+    <ng-container matColumnDef="LastSeen">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> נראה לאחרונה </th>
+      <td mat-cell *matCellDef="let element"> {{element.LastSeen|date:' HH:mm dd/MM/yy' }} </td>
     </ng-container>
     <ng-container matColumnDef="Permissions">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> הרשאות </th>
@@ -90,7 +98,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (dblclick)="openDialog(row)" style="text-align: center"></tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[50, 100, 200]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
 
 
 </div>

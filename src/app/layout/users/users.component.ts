@@ -14,6 +14,7 @@ import * as XLSX from 'ts-xlsx';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SelectionModel } from '@angular/cdk/collections';
+import * as moment from "moment";
 
 
 
@@ -29,7 +30,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild('myDialog') myDialog: TemplateRef<any>;
   private loading: boolean = false;
   user: any;
-  displayedColumns: string[] = ['select', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'Permissions'];
+  displayedColumns: string[] = ['select','index', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'LastSeen', 'Permissions'];
   usersArr: volunteer[];
   users = new MatTableDataSource<volunteer>(this.usersArr);
   arrayBuffer: any;
@@ -170,13 +171,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
 
           this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
-          this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org',this.xlsxUsers[i]['MobilePhone'])
+          this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org', this.xlsxUsers[i]['MobilePhone'])
 
         }
 
       }
       if (this.logErrors) {
-        alert('Invalid values in: \n  ' + this.logErrors.map(err=>err+'\n'))
+        alert('Invalid values in: \n  ' + this.logErrors.map(err => err + '\n'))
       }
       else {
         this.dialog.open(this.myDialog);
@@ -249,5 +250,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
     this.isAllSelected() ?
       this.selection.clear() :
       this.users.filteredData.forEach(row => this.selection.select(row));
+  }
+  getPageSizeOptions(): number[] {
+    return [50, 100, 200, this.users.data.length];
   }
 }
