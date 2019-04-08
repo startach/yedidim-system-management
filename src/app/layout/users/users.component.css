@@ -16,6 +16,10 @@
   ::ng-deep .mat-card{
       margin: 5%;
   } 
+  ::ng-deep .mat-cell .max-width{
+    width: 5%;
+    max-width: 10%;
+} 
   ::ng-deep .mat-raised-button{
     margin: 5%;
     height: 25%;
@@ -36,6 +40,9 @@ table{
         width: 100%;
    direction: rtl;
     margin: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     
 }
 .center {

@@ -30,7 +30,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild('myDialog') myDialog: TemplateRef<any>;
   private loading: boolean = false;
   user: any;
-  displayedColumns: string[] = ['select','index', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'LastSeen', 'Permissions'];
+  displayedColumns: string[] = ['select','index', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone','City','Area', 'LastSeen', 'Permissions'];
   usersArr: volunteer[];
   users = new MatTableDataSource<volunteer>(this.usersArr);
   arrayBuffer: any;
