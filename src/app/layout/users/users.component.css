@@ -91,5 +91,11 @@ table{
     background:rgb(0, 80, 112); 
 }
 div.inline { float:left; }
+
+.mat-column-Area {
+    width: 50px;
+    max-width: 100px;
+    overflow: hidden;
+  }
   
   
