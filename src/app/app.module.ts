@@ -25,6 +25,7 @@ import { MatNativeDateModule, MatDatepickerModule } from '@angular/material';
 import { BlockUIModule } from 'ng-block-ui';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 import {MomentModule} from "angular2-moment";
+import {  HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -37,7 +38,7 @@ import {MomentModule} from "angular2-moment";
     HeaderComponent,
     LayoutComponent,
     ConfirmDialogComponent,
-
+    
   ],
   imports: [
     BrowserModule,
@@ -52,7 +53,8 @@ import {MomentModule} from "angular2-moment";
     MatDatepickerModule,
     MatNativeDateModule,
     BlockUIModule.forRoot(),
-    MomentModule
+    MomentModule,
+    HttpClientModule
   ],
   entryComponents: [
     UserDetailsComponent,

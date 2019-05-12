@@ -15,6 +15,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SelectionModel } from '@angular/cdk/collections';
 import * as moment from "moment";
+import { YedidimApiService } from '../../shared/services/yedidim-api.service';
 
 
 
@@ -30,7 +31,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild('myDialog') myDialog: TemplateRef<any>;
   private loading: boolean = false;
   user: any;
-  displayedColumns: string[] = ['select','index', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone','City','Area', 'LastSeen', 'Permissions'];
+  displayedColumns: string[] = ['select', 'index', 'FirstName', 'LastName', 'DriveCode', 'DispatcherCode', 'MobilePhone', 'City', 'Area', 'LastSeen', 'Permissions'];
   usersArr: volunteer[];
   users = new MatTableDataSource<volunteer>(this.usersArr);
   arrayBuffer: any;
@@ -49,7 +50,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
+  constructor(private apiService: YedidimApiService, private mockDataService: MockDataService, public dialog: MatDialog, private afd: AngularFireDatabase, private data: DataService, private af: AngularFireAuth) {
     this.blockUI.start('...אנא המתן')
     if (sessionStorage.getItem('email')) {
       afd.list<any>('volunteer').valueChanges().subscribe(
@@ -108,13 +109,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
   }
 
-  incomingfile(event) {
+  public async incomingfile(event) {
     this.file = event.target.files[0];
 
     let fileReader = new FileReader();
     this.blockUI.start('טוען מתנדבים מקובץ אקסל');
 
-    fileReader.onload = (e) => {
+    fileReader.onload = async (e) => {
 
       this.arrayBuffer = fileReader.result;
       var data = new Uint8Array(this.arrayBuffer);
@@ -125,66 +126,72 @@ export class UsersComponent implements OnInit, AfterViewInit {
       var first_sheet_name = workbook.SheetNames[0];
       var worksheet = workbook.Sheets[first_sheet_name];
       this.xlsxUsers = XLSX.utils.sheet_to_json(worksheet, { raw: true });
-      for (let i = 0; i < this.xlsxUsers.length; i++) {
-        for (let j = 0; j < this.xcelMandatoryColumns.length; j++) {
-          if (!this.xlsxUsers[i][this.xcelMandatoryColumns[j]]) {
+      var token = await this.af.auth.currentUser.getIdToken(false);
+      console.log('token:',token);
+      this.apiService.post<any>('Import/Import', { token: this.af.idToken, volunteers: this.xlsxUsers }).subscribe(res => {
+        console.log(res)
+      });
 
-            this.logErrors.push('line number ' + i + 1 + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
-            console.log('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
-            continue;
-          }
-        }
+      // for (let i = 0; i < this.xlsxUsers.length; i++) {
+      //   for (let j = 0; j < this.xcelMandatoryColumns.length; j++) {
+      //     if (!this.xlsxUsers[i][this.xcelMandatoryColumns[j]]) {
 
-        for (let index = 0; index < Object.keys(this.xlsxUsers[i]).length; index++) {
+      //       this.logErrors.push('line number ' + i + 1 + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
+      //       console.log('line number ' + i + 'missing column' + '"' + this.xcelMandatoryColumns[j] + '"')
+      //       continue;
+      //     }
+      //   }
 
-          if (typeof (this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]] != 'string')) {
-            this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]] = String(this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]]);
-          }
-        }
-        if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
-          let obj2 = { 'permissions': ["מוקדן"] }
+      //   for (let index = 0; index < Object.keys(this.xlsxUsers[i]).length; index++) {
 
-          Object.assign(this.xlsxUsers[i], obj2);
-        }
+      //     if (typeof (this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]] != 'string')) {
+      //       this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]] = String(this.xlsxUsers[i][Object.keys(this.xlsxUsers[i])[index]]);
+      //     }
+      //   }
+      //   if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
+      //     let obj2 = { 'permissions': ["מוקדן"] }
 
-
-        this.xlsxUsers[i]['MobilePhone'] = '0' + this.xlsxUsers[i]['MobilePhone'];
-        this.af.auth.createUserWithEmailAndPassword('+972' + this.xlsxUsers[i]['MobilePhone'].substr(1) + '@yedidim.org',
-          this.xlsxUsers[i]['IdentityNumber']).then(value => {
-            //console.log('Success!', value);
-          }, err => {
-            //console.log('Something went wrong in:', err.message);
-          });
-        this.afd.list('volunteer').set('+972' + this.xlsxUsers[i]['MobilePhone'].substr(1), this.xlsxUsers[i]);
-        if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
-          this.dispatcher = {
-            NotificationStatus: '',
-            NotificationStatusTimestamp: '',
-            handleBot: 'false',
-            name: this.xlsxUsers[i]['FirstName'] + ' ' + this.xlsxUsers[i]['LastName'],
-            notifications: '',
-            phone: this.xlsxUsers[i]['MobilePhone'],
-            time: '',
-            token: '',
-            version: ''
-          }
+      //     Object.assign(this.xlsxUsers[i], obj2);
+      //   }
 
 
-          this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
-          this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org', this.xlsxUsers[i]['MobilePhone'])
+      //   this.xlsxUsers[i]['MobilePhone'] = '0' + this.xlsxUsers[i]['MobilePhone'];
+      //   this.af.auth.createUserWithEmailAndPassword('+972' + this.xlsxUsers[i]['MobilePhone'].substr(1) + '@yedidim.org',
+      //     this.xlsxUsers[i]['IdentityNumber']).then(value => {
+      //       //console.log('Success!', value);
+      //     }, err => {
+      //       //console.log('Something went wrong in:', err.message);
+      //     });
+      //   this.afd.list('volunteer').set('+972' + this.xlsxUsers[i]['MobilePhone'].substr(1), this.xlsxUsers[i]);
+      //   if (this.xlsxUsers[i]['DispatcherCode'] != '' && this.xlsxUsers[i]['DispatcherCode']) {
+      //     this.dispatcher = {
+      //       NotificationStatus: '',
+      //       NotificationStatusTimestamp: '',
+      //       handleBot: 'false',
+      //       name: this.xlsxUsers[i]['FirstName'] + ' ' + this.xlsxUsers[i]['LastName'],
+      //       notifications: '',
+      //       phone: this.xlsxUsers[i]['MobilePhone'],
+      //       time: '',
+      //       token: '',
+      //       version: ''
+      //     }
 
-        }
 
-      }
-      if (this.logErrors) {
-        alert('Invalid values in: \n  ' + this.logErrors.map(err => err + '\n'))
-      }
-      else {
-        this.dialog.open(this.myDialog);
-      }
+      //     this.afd.list('dispatchers').set(this.xlsxUsers[i]['DispatcherCode'], this.dispatcher);
+      //     this.af.auth.createUserWithEmailAndPassword(this.xlsxUsers[i]['DispatcherCode'] + '@yedidim.org', this.xlsxUsers[i]['MobilePhone'])
+
+      //   }
+
+      // }
+      // if (this.logErrors) {
+      //   alert('Invalid values in: \n  ' + this.logErrors.map(err => err + '\n'))
+      // }
+      // else {
+      //   this.dialog.open(this.myDialog);
+      // }
 
 
-      this.blockUI.stop();
+      // this.blockUI.stop();
 
     }
     fileReader.readAsArrayBuffer(this.file);
